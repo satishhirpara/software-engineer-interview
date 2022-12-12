@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Zip.InstallmentsService.Core.Helper
 {
-    public  static class StringHelper
+    /// <summary>
+    /// Common methods related to string operations
+    /// </summary>
+    public static class StringHelper
     {
        
     }

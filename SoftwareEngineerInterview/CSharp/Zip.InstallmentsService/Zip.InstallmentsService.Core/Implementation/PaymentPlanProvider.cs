@@ -73,9 +73,10 @@ namespace Zip.InstallmentsService.Core.Implementation
         {
             var responemodel = new ValidateRequestDto();
             if(requestModel == null) responemodel.Message = "Bad Request.";
-            else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please select no of installments.";
-            else if (requestModel.FrequencyInDays == 0) responemodel.Message = "Please select frequency.";
-            
+            else if (requestModel.PurchaseAmount <= 0) responemodel.Message = "Please provide valid order amount.";
+            else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please provide valid no of installments.";
+            else if (requestModel.FrequencyInDays == 0) responemodel.Message = "Please provide valid frequency.";
+
             responemodel.IsValid = true;
             return responemodel;
         }

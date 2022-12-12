@@ -5,7 +5,7 @@ using System.Text;
 namespace Zip.InstallmentsService.Core.Helper
 {
     /// <summary>
-    /// 
+    /// Common methods related to datime operations
     /// </summary>
     public static class DateTimeHelper
     {

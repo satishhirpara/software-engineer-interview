@@ -44,7 +44,7 @@ namespace Zip.InstallmentsService.Core.Test
 
             //Logging
             var serviceProvider = services.BuildServiceProvider();
-            var logger = serviceProvider.GetService<ILogger<ApplicationLogs>>();
+            var logger = serviceProvider.GetService<ILogger<ApplicationLogDto>>();
             services.AddSingleton(typeof(ILogger), logger);
 
             //services.AddLogging(config =>

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Zip.InstallmentsService.Entity.Dto
 {
-    public class ApplicationLogs
+    public class ApplicationLogDto
     {
     }
 }

@@ -17,7 +17,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         }
 
         /// <summary>
-        /// Logic to calculate installment
+        /// Logic to calculate installments as per no of installments and frequency
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>

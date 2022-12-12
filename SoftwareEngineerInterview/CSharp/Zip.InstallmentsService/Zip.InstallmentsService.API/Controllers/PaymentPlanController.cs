@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Core.Interface;
+using Zip.InstallmentsService.API.Helper;
+using System.Collections.Generic;
+using Zip.InstallmentsService.Entity;
 
 namespace Zip.InstallmentsService.API.Controllers
 {
@@ -40,29 +43,30 @@ namespace Zip.InstallmentsService.API.Controllers
         [Route("api/PaymentPlan/{id}")]
         public ActionResult<PaymentPlanDto> Get(Guid id)
         {
-            try
-            {
-                var result = _paymentPlanProvider.GetById(id);
-                if (result == null)
-                {
-                    return NotFound(new PaymentPlanDto());
-                }
+            //_logger.LogInformation("Start: Get PaymentPlan for id :" + id.ToString());
 
-                return Ok(result);
-            }
-            catch (Exception ex)
+            //Validate request
+            if (id == null || id == Guid.Empty)
             {
-                
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw new AppException(Constants.BadRequest);
             }
 
+            //Get paymentplan by id
+            var result = _paymentPlanProvider.GetById(id);
+            if (result == null)
+            {
+                //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString() + "Not found");
+                throw new KeyNotFoundException(Constants.NoRecordFound);
+            }
+
+            //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString());
+            return Ok(result);
         }
 
 
         /// <summary>
-        /// Api to create payment plan intallments
-        ///  UnComment or add Authorize for JWT token based authentication
+        /// Api to create payment plan intallments,
+        /// UnComment or add Authorize attribute for JWT token based authentication
         /// </summary>
         /// <param name="_requestModel"></param>
         /// <returns></returns>
@@ -71,34 +75,26 @@ namespace Zip.InstallmentsService.API.Controllers
         [Route("api/PaymentPlan")]
         public ActionResult<PaymentPlanDto> Create(CreatePaymentPlanDto _requestModel)
         {
-            try
+            _requestModel.Id = Guid.NewGuid();
+
+            if (_requestModel.PurchaseDate == DateTime.MinValue)
+                _requestModel.PurchaseDate = DateTime.UtcNow;
+
+            //Validate Request
+            var validRequestViewModel = _paymentPlanProvider.ValidateCreateRequest(_requestModel);
+            if (!validRequestViewModel.IsValid)
             {
-                _requestModel.Id = Guid.NewGuid();
-
-                if (_requestModel.PurchaseDate == DateTime.MinValue) 
-                    _requestModel.PurchaseDate = DateTime.UtcNow;
-
-                //Validate Request
-                var validRequestViewModel = _paymentPlanProvider.ValidateCreateRequest(_requestModel);
-                if (!validRequestViewModel.IsValid)
-                {
-                    return BadRequest(validRequestViewModel.Message);
-                }
-
-                //Create Plan
-                var result = _paymentPlanProvider.Create(_requestModel);
-                if (result == null)
-                {
-                    return NotFound(new PaymentPlanDto());
-                }
-
-                return Ok(result);
+                throw new AppException(validRequestViewModel.Message);
             }
-            catch (Exception ex)
+
+            //Create Plan
+            var result = _paymentPlanProvider.Create(_requestModel);
+            if (result == null)
             {
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw new KeyNotFoundException(Constants.NoRecordFound);
             }
+
+            return Ok(result);
         }
 
 
