@@ -11,6 +11,9 @@ using System.Net.Http;
 
 namespace Zip.InstallmentsService.API.Middleware
 {
+    /// <summary>
+    /// Global or common Error Handler Middleware (Custom Middleware) which includes logging and exception handling logic
+    /// </summary>
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;

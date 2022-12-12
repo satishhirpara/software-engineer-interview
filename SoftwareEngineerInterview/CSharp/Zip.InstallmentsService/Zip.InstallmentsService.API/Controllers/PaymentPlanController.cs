@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using Zip.InstallmentsService.Entity.Dto;
-using Zip.InstallmentsService.Core.Interface;
-using Zip.InstallmentsService.API.Helper;
 using System.Collections.Generic;
+using Zip.InstallmentsService.API.Helper;
+using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity;
+using Zip.InstallmentsService.Entity.Dto;
 
 namespace Zip.InstallmentsService.API.Controllers
 {
@@ -33,8 +32,8 @@ namespace Zip.InstallmentsService.API.Controllers
         }
 
         /// <summary>
-        /// Api to get payment plan along with installment by id
-        ///  UnComment or add Authorize for JWT token based authentication
+        /// Api to get payment plan along with installments by id
+        ///  UnComment or add Authorize attribute for JWT token based authentication
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
