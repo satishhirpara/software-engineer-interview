@@ -22,7 +22,7 @@ namespace Zip.InstallmentsService.Data.Repository
         }
 
         /// <summary>
-        /// Database logic to get payment plan by id
+        /// Database logic to get payment plan with all installments by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -33,7 +33,7 @@ namespace Zip.InstallmentsService.Data.Repository
         }
 
         /// <summary>
-        /// Database logic to create payment plan
+        /// Database logic to create payment plan with all installments
         /// </summary>
         /// <param name="_paymentPlan"></param>
         /// <returns></returns>
