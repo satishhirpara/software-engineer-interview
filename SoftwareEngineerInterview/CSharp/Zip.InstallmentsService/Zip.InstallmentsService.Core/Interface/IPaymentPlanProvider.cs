@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Zip.InstallmentsService.Entity.Common;
-using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 

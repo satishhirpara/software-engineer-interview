@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
-using System;
-using System.Linq;
-using Zip.InstallmentsService.Data.Interface;
-using Zip.InstallmentsService.Entity.Dto;
-using Zip.InstallmentsService.Core.Interface;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Zip.InstallmentsService.Core.Interface;
+using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
+using Zip.InstallmentsService.Entity.Common;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
-using Zip.InstallmentsService.Entity.Common;
-using System.Collections.Generic;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
@@ -80,7 +79,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             //Create Payment plan
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
-            _logger.LogInformation("Payment plam created successfully user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
+            _logger.LogInformation("Payment plan created successfully user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
             return _mapper.Map<PaymentPlanResponse>(response);
         }
 

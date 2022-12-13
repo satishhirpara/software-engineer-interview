@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 using Zip.InstallmentsService.Core.Implementation;
 using Zip.InstallmentsService.Core.Interface;
@@ -16,14 +15,19 @@ using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Test
 {
+    /// <summary>
+    /// Class which defines all the XUnit Test Cases of the PaymentPlanProvider or PaymentPlanService
+    /// </summary>
     public class PaymentPlanProviderTest
     {
         private readonly PaymentPlanProvider _sut;
         private readonly Mock<IPaymentPlanRepository> _paymentPlanRepositoryMock = new Mock<IPaymentPlanRepository>();
         private readonly Mock<IInstallmentProvider> _installmentProviderMock = new Mock<IInstallmentProvider>();
         private readonly Mock<ILogger> _logger = new Mock<ILogger>();
-        //private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
 
+        /// <summary>
+        /// Intialization in Constructor 
+        /// </summary>
         public PaymentPlanProviderTest()
         {
             //auto mapper configuration
@@ -36,6 +40,9 @@ namespace Zip.InstallmentsService.Core.Test
             _sut = new PaymentPlanProvider(_paymentPlanRepositoryMock.Object, _installmentProviderMock.Object, _logger.Object, _mapperMock);
         }
 
+        /// <summary>
+        /// Test case for CreatePaymentPlanAsync Method when valid order amount is provided
+        /// </summary>
         [Fact]
         public async void CreatePaymentPlanAsync_ShouldReturnNewCreatedPaymentPlan_WhenValidOrderAmountGiven()
         {
@@ -59,9 +66,12 @@ namespace Zip.InstallmentsService.Core.Test
             var paymentPlan = await _sut.CreatePaymentPlanAsync(createPaymentPlanRequest);
 
             //Assert
-            Assert.Equal(4, paymentPlan.Installments.Count);
+            Assert.Equal(4, paymentPlan?.Installments?.Count);
         }
 
+        /// <summary>
+        /// Test case for CreatePaymentPlanAsync Method when in-valid order amount is provided
+        /// </summary>
         [Fact]
         public async void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidOrderAmountGiven()
         {
@@ -80,6 +90,9 @@ namespace Zip.InstallmentsService.Core.Test
             Assert.Null(paymentPlan);
         }
 
+        /// <summary>
+        /// Test case for CreatePaymentPlanAsync Method when in-valid input data is provided
+        /// </summary>
         [Fact]
         public async void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidInputGiven()
         {
@@ -99,6 +112,9 @@ namespace Zip.InstallmentsService.Core.Test
         }
 
 
+        /// <summary>
+        /// Test case for GetByIdAsync Method when Payment Plan exist
+        /// </summary>
         [Fact]
         public async void GetByIdAsync_ShouldReturnPaymentPlan_WhenPaymentPlanExists()
         {
@@ -113,9 +129,12 @@ namespace Zip.InstallmentsService.Core.Test
             var paymentPlan = await _sut.GetByIdAsync(paymentPlanId);
 
             //Assert
-            Assert.Null(paymentPlan);
+            Assert.Equal(paymentPlanId, paymentPlan.Id);
         }
 
+        /// <summary>
+        /// Test case for GetByIdAsync Method when Payment Plan does not exist
+        /// </summary>
         [Fact]
         public async void GetByIdAsync_ShouldReturnNothing_WhenPaymentPlanDoesNotExist()
         {
@@ -131,7 +150,7 @@ namespace Zip.InstallmentsService.Core.Test
         }
 
 
-        #region Private Methods
+        #region Private Methods for mock object preparation
 
         private PaymentPlanDto MockPaymentPlanDtoObject(Guid id, Guid userId, string date, decimal amount, int noOfInstallments, int frequencyInDays)
         {
