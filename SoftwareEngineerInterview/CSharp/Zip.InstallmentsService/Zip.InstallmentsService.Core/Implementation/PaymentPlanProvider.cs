@@ -96,6 +96,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             if (requestModel == null) responemodel.Message = "Bad Request.";
             else if (requestModel.PurchaseAmount <= 0) responemodel.Message = "Please provide valid order amount.";
             else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please provide valid no of installments.";
+            else if (requestModel.PurchaseAmount <= requestModel.NoOfInstallments) responemodel.Message = "Please provide valid order amount or no of installments.";
             else if (requestModel.FrequencyInDays == 0 || requestModel.FrequencyInDays > 365) responemodel.Message = "Please provide valid frequency between 0 to 365 days.";
 
             if (!string.IsNullOrEmpty(responemodel.Message)) return responemodel;
