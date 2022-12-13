@@ -17,9 +17,6 @@ namespace Zip.InstallmentsService.Entity.V1.Request
         public DateTime PurchaseDate { get; set; }
         public int NoOfInstallments { get; set; }
         public int FrequencyInDays { get; set; }
-
-        [JsonIgnore]
-        public List<InstallmentResponse> Installments { get; set; }
     }
 
 }

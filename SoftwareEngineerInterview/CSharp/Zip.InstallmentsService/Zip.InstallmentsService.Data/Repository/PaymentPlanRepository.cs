@@ -55,7 +55,9 @@ namespace Zip.InstallmentsService.Data.Repository
                 Id = item.Id,
                 PaymentPlanId = item.PaymentPlanId,
                 DueDate = item.DueDate,
-                Amount = item.Amount
+                Amount = item.Amount,
+                CreatedOn = item.CreatedOn,
+                CreatedBy = item.CreatedBy
             });
 
             return new PaymentPlanDto()

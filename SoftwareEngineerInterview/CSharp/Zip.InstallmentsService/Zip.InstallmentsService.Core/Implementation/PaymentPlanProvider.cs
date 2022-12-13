@@ -73,10 +73,11 @@ namespace Zip.InstallmentsService.Core.Implementation
             }
 
             //Calculate installments
-            requestModel.Installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
-
-            //Create Payment plan
             var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
+            var installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
+            paymentPlan.Installments = _mapper.Map<List<Installment>>(installments);
+            
+            //Create Payment plan
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
             _logger.LogInformation("Payment plam created successfully user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
@@ -95,7 +96,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             if (requestModel == null) responemodel.Message = "Bad Request.";
             else if (requestModel.PurchaseAmount <= 0) responemodel.Message = "Please provide valid order amount.";
             else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please provide valid no of installments.";
-            else if (requestModel.FrequencyInDays == 0) responemodel.Message = "Please provide valid frequency.";
+            else if (requestModel.FrequencyInDays == 0 || requestModel.FrequencyInDays > 365) responemodel.Message = "Please provide valid frequency between 0 to 365 days.";
 
             if (!string.IsNullOrEmpty(responemodel.Message)) return responemodel;
 

@@ -10,6 +10,7 @@ using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Core.Mapping;
 using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.Core.Test
 {
@@ -32,6 +33,28 @@ namespace Zip.InstallmentsService.Core.Test
 
             _sut = new PaymentPlanProvider(_paymentPlanRepositoryMock.Object, _installmentProviderMock.Object, _logger.Object, _mapperMock);
         }
+
+        [Fact]
+        public async void CreatePaymentPlanAsync_ShouldReturnPaymentPlan_WhenValidOrderAmountGiven()
+        {
+            //Arrange
+            var paymentPlanId = Guid.NewGuid();
+            var userId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+            
+            var createPaymentPlanRequest = this.MockPaymentPlanDtoObject(paymentPlanId, userId, "2022-01-01", 100, 4, 14);
+            _installmentProviderMock.Setup(x=>x.CalculateInstallments)
+
+            _paymentPlanRepositoryMock.Setup(x => x.GetByIdAsync(paymentPlanId))
+                .ReturnsAsync(paymentPlanDto);
+
+            //Act
+            var paymentPlan = await _sut.GetByIdAsync(paymentPlanId);
+
+            //Assert
+            Assert.Equal(paymentPlanId, paymentPlan.Id);
+        }
+
+
 
         [Fact]
         public async void GetByIdAsync_ShouldReturnPaymentPlan_WhenPaymentPlanExists()
@@ -79,8 +102,23 @@ namespace Zip.InstallmentsService.Core.Test
                 FrequencyInDays = frequencyInDays,
                 Installments = this.MockInstallments(id)
             };
-
             return paymentPlanDto;
+        }
+
+        private CreatePaymentPlanRequest MockCreatePaymentPlanRequestObject(Guid id, Guid userId, string date, decimal amount, int noOfInstallments, int frequencyInDays)
+        {
+            CreatePaymentPlanRequest createPaymentPlanRequest = new CreatePaymentPlanRequest()
+            {
+                Id = id,
+                UserId = userId,
+                PurchaseDate = Convert.ToDateTime(date),
+                PurchaseAmount = amount,
+                NoOfInstallments = noOfInstallments,
+                FrequencyInDays = frequencyInDays,
+                Installments = this.MockInstallments(id)
+            };
+
+            return createPaymentPlanRequest;
         }
 
         private List<InstallmentDto> MockInstallments(Guid paymentPlanId)
