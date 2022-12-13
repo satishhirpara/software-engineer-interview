@@ -46,14 +46,15 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         public async Task<PaymentPlanResponse> GetByIdAsync(Guid id)
         {
-            var response = await _paymentPlanRepository.GetByIdAsync(id);
-            if (response == null)
+            var paymentPlan = await _paymentPlanRepository.GetByIdAsync(id);
+            if (paymentPlan == null)
             {
-                //_logger.LogInformation();
+                _logger.LogInformation("Unable to find a payment plan with Id: {Id}", id);
                 return null;
-            } 
+            }
 
-            return _mapper.Map<PaymentPlanResponse>(response);
+            _logger.LogInformation("Retrieved a payment plan with Id: {Id}", id);
+            return _mapper.Map<PaymentPlanResponse>(paymentPlan);
         }
 
         /// <summary>
@@ -65,7 +66,11 @@ namespace Zip.InstallmentsService.Core.Implementation
         {
             //Validate request
             var validateRequest = this.ValidateCreatePaymentPlanRequest(requestModel);
-            if (!validateRequest.IsValid) return null;
+            if (!validateRequest.IsValid)
+            {
+                _logger.LogInformation("Unable to create a payment plan due to bad request for userId : {userId}", requestModel.UserId);
+                return null;
+            }
 
             //Calculate installments
             requestModel.Installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
@@ -74,6 +79,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
+            _logger.LogInformation("Payment plam created successfully user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
             return _mapper.Map<PaymentPlanResponse>(response);
         }
 

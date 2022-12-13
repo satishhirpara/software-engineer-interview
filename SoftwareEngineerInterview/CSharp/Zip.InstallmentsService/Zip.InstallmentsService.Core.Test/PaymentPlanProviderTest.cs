@@ -27,11 +27,9 @@ namespace Zip.InstallmentsService.Core.Test
         [Fact]
         public void GetByIdAsync_ShooudReturnPaymentPlan_WhenPaymentPlanExists()
         {
-
             //Arrange
             var paymentPlanId = Guid.NewGuid();
-
-            //_paymentPlanRepositoryMock.Setup(x => x.GetByIdAsync(paymentPlanId))
+            _paymentPlanRepositoryMock.Setup(x => x.GetByIdAsync(paymentPlanId))
             //    .Returns(paymentPlanDto);
 
 
@@ -39,7 +37,7 @@ namespace Zip.InstallmentsService.Core.Test
             var paymentPlan = _sut.GetByIdAsync(paymentPlanId);
 
             //Assert
-            //Assert.Equal(paymentPlanId, paymentPlan.Id);
+            Assert.Equal(paymentPlanId, paymentPlan.Result.Id);
         }
 
 

@@ -44,8 +44,6 @@ namespace Zip.InstallmentsService.API.Controllers
         [Route("api/PaymentPlan/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            //_logger.LogInformation("Start: Get PaymentPlan for id :" + id.ToString());
-
             //Validate request
             if (id == null || id == Guid.Empty)
             {
@@ -56,11 +54,9 @@ namespace Zip.InstallmentsService.API.Controllers
             var result = await _paymentPlanProvider.GetByIdAsync(id);
             if (result == null)
             {
-                //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString() + "Not found");
                 throw new KeyNotFoundException(AppConstants.NoRecordFound);
             }
-
-            //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString());
+            
             return Ok(result);
         }
 
