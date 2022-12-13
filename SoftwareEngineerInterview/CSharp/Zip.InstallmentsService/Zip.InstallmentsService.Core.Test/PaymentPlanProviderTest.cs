@@ -25,7 +25,7 @@ namespace Zip.InstallmentsService.Core.Test
         }
 
         [Fact]
-        public void GetById_ShooudReturnPaymentPlan_WhenPaymentPlanExists()
+        public void GetByIdAsync_ShooudReturnPaymentPlan_WhenPaymentPlanExists()
         {
 
             //Arrange

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
-using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Entity.V1.Request
 {
@@ -20,7 +19,7 @@ namespace Zip.InstallmentsService.Entity.V1.Request
         public int FrequencyInDays { get; set; }
 
         [JsonIgnore]
-        public List<InstallmentDto> Installments { get; set; }
+        public List<InstallmentResponse> Installments { get; set; }
     }
 
 }

@@ -14,7 +14,12 @@ namespace Zip.InstallmentsService.Core.Mapping
         public PaymentPlanProfile()
         {
             CreateMap<CreatePaymentPlanRequest, PaymentPlan>();
-            CreateMap<PaymentPlan, PaymentPlanResponse>();
+
+            CreateMap<PaymentPlanDto, PaymentPlanResponse>();
+            CreateMap<InstallmentDto, InstallmentResponse>();
+
+            CreateMap<InstallmentResponse, Installment>();
+            
         }
 
     }

@@ -5,6 +5,7 @@ using Zip.InstallmentsService.Core.Helper;
 using Zip.InstallmentsService.Core.Interface;
 using System.Threading.Tasks;
 using Zip.InstallmentsService.Entity.V1.Request;
+using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
@@ -23,9 +24,9 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        public List<InstallmentDto> CalculateInstallments(CreatePaymentPlanRequest requestModel)
+        public List<InstallmentResponse> CalculateInstallments(CreatePaymentPlanRequest requestModel)
         {
-            List<InstallmentDto> installments = new List<InstallmentDto>();
+            List<InstallmentResponse> installments = new List<InstallmentResponse>();
 
             var purchaseDate = requestModel.PurchaseDate; // 01-01-2022
             var purchaseAmount = requestModel.PurchaseAmount; // $100.00
@@ -33,11 +34,11 @@ namespace Zip.InstallmentsService.Core.Implementation
             var frequencyInDays = requestModel.FrequencyInDays; // 14 days
             var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments, frequencyInDays);
 
-            InstallmentDto installment;
+            InstallmentResponse installment;
             var nextInstallmentDate = purchaseDate;
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
             {
-                installment = new InstallmentDto();
+                installment = new InstallmentResponse();
                 installment.Id = System.Guid.NewGuid();
                 installment.PaymentPlanId = requestModel.Id;
 

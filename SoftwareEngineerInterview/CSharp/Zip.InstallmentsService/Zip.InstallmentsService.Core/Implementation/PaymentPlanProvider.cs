@@ -10,6 +10,7 @@ using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 using Zip.InstallmentsService.Entity.Common;
+using System.Collections.Generic;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
@@ -70,7 +71,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             requestModel.Installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
 
             //Create Payment plan
-            var paymentPlan =_mapper.Map<PaymentPlan>(requestModel);
+            var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
             return _mapper.Map<PaymentPlanResponse>(response);

@@ -13,6 +13,6 @@ namespace Zip.InstallmentsService.Entity.V1.Response
         public DateTime PurchaseDate { get; set; }
         public int NoOfInstallments { get; set; }
         public int FrequencyInDays { get; set; }
-        public List<InstallmentDto> Installments { get; set; }
+        public List<InstallmentResponse> Installments { get; set; }
     }
 }
