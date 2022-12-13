@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Core.Helper;
 using Zip.InstallmentsService.Core.Interface;
+using System.Threading.Tasks;
+using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
@@ -21,7 +23,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        public List<InstallmentDto> CalculateInstallments(PaymentPlanDto requestModel)
+        public List<InstallmentDto> CalculateInstallments(CreatePaymentPlanRequest requestModel)
         {
             List<InstallmentDto> installments = new List<InstallmentDto>();
 

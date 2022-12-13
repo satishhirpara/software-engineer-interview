@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Zip.InstallmentsService.Entity
 {
-    public class Constants
+    public class AppConstants
     {
         public const string NoRecordFound = "No Record Found";
         public const string NotFound = "Not Found";

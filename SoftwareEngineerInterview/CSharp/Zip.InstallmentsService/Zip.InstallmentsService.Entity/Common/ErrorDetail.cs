@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace Zip.InstallmentsService.Entity.Dto
+namespace Zip.InstallmentsService.Entity.Common
 {
-    public class ErrorDetailDto
+    public class ErrorDetail
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }

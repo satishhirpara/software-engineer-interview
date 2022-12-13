@@ -8,6 +8,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Zip.InstallmentsService.Entity.Dto;
 using System.Net.Http;
+using Zip.InstallmentsService.Entity.Common;
 
 namespace Zip.InstallmentsService.API.Middleware
 {
@@ -61,7 +62,7 @@ namespace Zip.InstallmentsService.API.Middleware
             }
 
             //prepare object and return error details
-            var errorDetails = new ErrorDetailDto()
+            var errorDetails = new ErrorDetail()
             {
                 StatusCode = response.StatusCode,
                 Message = error?.Message  //"Internal Server Error from the custom middleware."

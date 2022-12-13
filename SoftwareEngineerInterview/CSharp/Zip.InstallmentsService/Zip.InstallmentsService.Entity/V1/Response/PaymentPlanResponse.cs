@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using System.Text;
+using Zip.InstallmentsService.Entity.Dto;
 
-namespace Zip.InstallmentsService.Entity.Dto
+namespace Zip.InstallmentsService.Entity.V1.Response
 {
-    /// <summary>
-    /// Data structure which defines all the properties for a PaymentPlan Requests.
-    /// </summary>
-    public class PaymentPlanDto
+    public class PaymentPlanResponse
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
@@ -16,7 +14,5 @@ namespace Zip.InstallmentsService.Entity.Dto
         public int NoOfInstallments { get; set; }
         public int FrequencyInDays { get; set; }
         public List<InstallmentDto> Installments { get; set; }
-
     }
-
 }

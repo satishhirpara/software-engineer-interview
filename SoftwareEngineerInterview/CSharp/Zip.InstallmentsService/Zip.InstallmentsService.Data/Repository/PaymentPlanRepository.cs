@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.Dto;
@@ -26,10 +27,10 @@ namespace Zip.InstallmentsService.Data.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public PaymentPlan GetById(Guid id)
+        public async Task<PaymentPlanDto> GetByIdAsync(Guid id)
         {
-            var result = _context.PaymentPlans.Where(k => k.Id == id).Include(k => k.Installments)?.FirstOrDefault();
-            return result;
+            var paymentPlan = _context.PaymentPlans.Where(k => k.Id == id).Include(k => k.Installments)?.FirstOrDefault();
+            return this.MapToPaymentPlanDto(paymentPlan);
         }
 
         /// <summary>
@@ -37,37 +38,34 @@ namespace Zip.InstallmentsService.Data.Repository
         /// </summary>
         /// <param name="_paymentPlan"></param>
         /// <returns></returns>
-        public PaymentPlan Create(PaymentPlanDto _paymentPlan)
+        public async Task<PaymentPlanDto> CreatePaymentPlanAsync(PaymentPlan paymentPlan)
         {
-            var paymenPlan = new PaymentPlan
+            var result = await _context.PaymentPlans.AddAsync(paymentPlan);
+            await _context.SaveChangesAsync();
+            return this.MapToPaymentPlanDto(result.Entity); 
+        }
+
+        private PaymentPlanDto MapToPaymentPlanDto(PaymentPlan paymentPlan)
+        {
+            //get installments
+            var installments = paymentPlan?.Installments.Select(item => new InstallmentDto
             {
-                Id = _paymentPlan.Id,
-                UserId = _paymentPlan.UserId,
-                PurchaseAmount = _paymentPlan.PurchaseAmount,
-                PurchaseDate = _paymentPlan.PurchaseDate,
-                NoOfInstallments = _paymentPlan.NoOfInstallments,
-                FrequencyInDays = _paymentPlan.FrequencyInDays,
-                CreatedOn = DateTime.UtcNow,
-                CreatedBy = _paymentPlan.UserId
+                Id = item.Id,
+                PaymentPlanId = item.PaymentPlanId,
+                DueDate = item.DueDate,
+                Amount = item.Amount
+            });
+
+            return new PaymentPlanDto()
+            {
+                Id = paymentPlan.Id,
+                UserId = paymentPlan.UserId,
+                PurchaseAmount = paymentPlan.PurchaseAmount,
+                PurchaseDate = paymentPlan.PurchaseDate,
+                NoOfInstallments = paymentPlan.NoOfInstallments,
+                FrequencyInDays = paymentPlan.FrequencyInDays,
+                Installments = installments.ToList() ?? null
             };
-            _context.PaymentPlans.Add(paymenPlan);
-
-            foreach (var item in _paymentPlan?.Installments)
-            {
-                var installment = new Installment
-                {
-                    Id = item.Id,
-                    PaymentPlanId = item.PaymentPlanId,
-                    DueDate = item.DueDate,
-                    Amount = item.Amount,
-                    CreatedOn = item.CreatedOn,
-                    CreatedBy = item.CreatedBy
-                };
-                _context.Installments.Add(installment);
-            }
-
-            _context.SaveChanges();
-            return paymenPlan;
         }
 
 

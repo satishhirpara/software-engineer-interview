@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zip.InstallmentsService.Entity.Common;
 using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Request;
+using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Interface
 {
     public interface IPaymentPlanProvider
     {
-        ValidateRequestDto ValidateCreateRequest(CreatePaymentPlanDto requestModel);
-        PaymentPlanDto Create(CreatePaymentPlanDto requestModel);
-        PaymentPlanDto GetById(Guid id);
+        ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel);
+        Task<PaymentPlanResponse> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel);
+        Task<PaymentPlanResponse> GetByIdAsync(Guid id);
 
     }
 }

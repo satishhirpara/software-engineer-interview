@@ -1,78 +1,50 @@
 using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Threading.Tasks;
-using Zip.InstallmentsService.Data.Interface;
-using Zip.InstallmentsService.Data.Models;
-using Zip.InstallmentsService.Data.Repository;
-using Zip.InstallmentsService.Entity.Dto;
+using Xunit;
 using Zip.InstallmentsService.Core.Implementation;
 using Zip.InstallmentsService.Core.Interface;
+using Zip.InstallmentsService.Data.Interface;
+using Zip.InstallmentsService.Entity.Dto;
 
 namespace Zip.InstallmentsService.Core.Test
 {
-    [TestClass]
     public class PaymentPlanProviderTest
     {
+        private readonly PaymentPlanProvider _sut;
+        private readonly Mock<IPaymentPlanRepository> _paymentPlanRepositoryMock = new Mock<IPaymentPlanRepository>();
+        private readonly Mock<IInstallmentProvider> _installmentProviderMock = new Mock<IInstallmentProvider>();
+        private readonly Mock<ILogger> _logger = new Mock<ILogger>();
+        private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
 
-        [TestMethod]
-        public void WhenCreatePaymentPlanWithValidOrderAmount_ShouldReturnValidPaymentPlan()
+        public PaymentPlanProviderTest()
         {
-            // Arrange
-            CreatePaymentPlanDto request = this.MockRequestObject(4, 14);
-            PaymentPlanDto responseObj = this.MockResponseObject(request.Id, request.UserId, request.PurchaseDate, request.NoOfInstallments, request.FrequencyInDays);
+            _sut = new PaymentPlanProvider(_paymentPlanRepositoryMock.Object, _installmentProviderMock.Object, _logger.Object, _mapperMock.Object);
+        }
+
+        [Fact]
+        public void GetById_ShooudReturnPaymentPlan_WhenPaymentPlanExists()
+        {
+
+            //Arrange
+            var paymentPlanId = Guid.NewGuid();
+
+            //_paymentPlanRepositoryMock.Setup(x => x.GetByIdAsync(paymentPlanId))
+            //    .Returns(paymentPlanDto);
+
 
             //Act
-            var MockPaymentPlanProvider = TestInitializer.MockPaymentPlanProvider;
-            MockPaymentPlanProvider.Setup
-                  (x => x.Create(request)).Returns(responseObj);
+            var paymentPlan = _sut.GetByIdAsync(paymentPlanId);
 
-            // Assert
-            Assert.AreNotEqual(null, responseObj);
+            //Assert
+            //Assert.Equal(paymentPlanId, paymentPlan.Id);
         }
 
-        [TestMethod]
-        public void WhenCreatePaymentPlanWithInValidRequest_ShouldReturnNull()
-        {
-            // Arrange
-            CreatePaymentPlanDto request = this.MockRequestObject(0, 0);
-            PaymentPlanDto responseObj = null;
 
-            //Act
-            var MockPaymentPlanProvider = TestInitializer.MockPaymentPlanProvider;
-            MockPaymentPlanProvider.Setup
-                  (x => x.Create(request)).Returns(responseObj);
+        
 
-            // Assert
-            Assert.AreEqual(null, responseObj);
-        }
-
-        private CreatePaymentPlanDto MockRequestObject(int noOfInstallments, int frequencyInDays)
-        {
-            CreatePaymentPlanDto request = new CreatePaymentPlanDto()
-            {
-                Id = Guid.NewGuid(),
-                UserId = Guid.Parse("504A683D-B4C3-4770-962B-4B5F3F89BB91"),
-                PurchaseDate = DateTime.UtcNow,
-                NoOfInstallments = noOfInstallments,
-                FrequencyInDays = frequencyInDays
-            };
-            return request;
-        }
-        private PaymentPlanDto MockResponseObject(Guid id, Guid userId, DateTime date, int noOfInstallments, int frequencyInDays)
-        {
-            PaymentPlanDto response = new PaymentPlanDto()
-            {
-                Id = Guid.NewGuid(),
-                UserId = Guid.Parse("504A683D-B4C3-4770-962B-4B5F3F89BB91"),
-                PurchaseDate = DateTime.UtcNow,
-                NoOfInstallments = noOfInstallments,
-                FrequencyInDays = frequencyInDays
-            };
-
-            return response;
-        }
 
     }
 }

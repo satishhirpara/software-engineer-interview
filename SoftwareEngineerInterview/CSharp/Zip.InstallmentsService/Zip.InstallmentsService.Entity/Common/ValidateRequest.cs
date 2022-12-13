@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Zip.InstallmentsService.Entity.Dto
+namespace Zip.InstallmentsService.Entity.Common
 {
-    public class ValidateRequestDto
+    public class ValidateRequest
     {
         public bool IsValid { get; set; }
         public string Message { get; set; }

@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Zip.InstallmentsService.API.Middleware;
+using Zip.InstallmentsService.Entity.Common;
 
 namespace Zip.InstallmentsService.Service
 {
@@ -55,7 +56,7 @@ namespace Zip.InstallmentsService.Service
 
             //Logging
             var serviceProvider = services.BuildServiceProvider();
-            var logger = serviceProvider.GetService<ILogger<ApplicationLogDto>>();
+            var logger = serviceProvider.GetService<ILogger<ApplicationLog>>();
             services.AddSingleton(typeof(ILogger), logger);
 
             //services.AddLogging(config =>
@@ -66,10 +67,10 @@ namespace Zip.InstallmentsService.Service
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettingDto>(appSettingsSection);
+            services.Configure<AppSetting>(appSettingsSection);
 
             // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettingDto>();
+            var appSettings = appSettingsSection.Get<AppSetting>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {

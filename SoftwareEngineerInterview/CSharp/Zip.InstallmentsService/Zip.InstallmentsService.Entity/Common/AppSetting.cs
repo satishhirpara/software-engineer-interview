@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Zip.InstallmentsService.Entity.Dto
+namespace Zip.InstallmentsService.Entity.Common
 {
-    public class AppSettingDto
+    public class AppSetting
     {
         public string Secret { get; set; }
     }

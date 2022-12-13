@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Zip.InstallmentsService.API.Helper;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity;
 using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.API.Controllers
 {
@@ -40,22 +42,22 @@ namespace Zip.InstallmentsService.API.Controllers
         [HttpGet]
         //[Authorize]
         [Route("api/PaymentPlan/{id}")]
-        public ActionResult<PaymentPlanDto> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             //_logger.LogInformation("Start: Get PaymentPlan for id :" + id.ToString());
 
             //Validate request
             if (id == null || id == Guid.Empty)
             {
-                throw new AppException(Constants.BadRequest);
+                throw new AppException(AppConstants.BadRequest);
             }
 
             //Get paymentplan by id
-            var result = _paymentPlanProvider.GetById(id);
+            var result = await _paymentPlanProvider.GetByIdAsync(id);
             if (result == null)
             {
                 //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString() + "Not found");
-                throw new KeyNotFoundException(Constants.NoRecordFound);
+                throw new KeyNotFoundException(AppConstants.NoRecordFound);
             }
 
             //_logger.LogInformation("End: Get PaymentPlan for id :" + id.ToString());
@@ -72,7 +74,7 @@ namespace Zip.InstallmentsService.API.Controllers
         [HttpPost]
         //[Authorize] 
         [Route("api/PaymentPlan")]
-        public ActionResult<PaymentPlanDto> Create(CreatePaymentPlanDto _requestModel)
+        public async Task<IActionResult> Create([FromBody] CreatePaymentPlanRequest _requestModel)
         {
             _requestModel.Id = Guid.NewGuid();
 
@@ -80,17 +82,17 @@ namespace Zip.InstallmentsService.API.Controllers
                 _requestModel.PurchaseDate = DateTime.UtcNow;
 
             //Validate Request
-            var validRequestViewModel = _paymentPlanProvider.ValidateCreateRequest(_requestModel);
+            var validRequestViewModel = _paymentPlanProvider.ValidateCreatePaymentPlanRequest(_requestModel);
             if (!validRequestViewModel.IsValid)
             {
                 throw new AppException(validRequestViewModel.Message);
             }
 
             //Create Plan
-            var result = _paymentPlanProvider.Create(_requestModel);
+            var result = _paymentPlanProvider.CreatePaymentPlanAsync(_requestModel);
             if (result == null)
             {
-                throw new KeyNotFoundException(Constants.NoRecordFound);
+                throw new KeyNotFoundException(AppConstants.NoRecordFound);
             }
 
             return Ok(result);

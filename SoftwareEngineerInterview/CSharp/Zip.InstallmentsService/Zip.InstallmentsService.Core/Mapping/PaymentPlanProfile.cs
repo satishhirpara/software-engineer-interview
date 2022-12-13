@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Request;
+using Zip.InstallmentsService.Entity.V1.Response;
 
-namespace Zip.InstallmentsService.Core.Entity
+namespace Zip.InstallmentsService.Core.Mapping
 {
     /// <summary>
     /// Created profiles for AutoMapper (Mapping of objects) of entities
@@ -11,10 +13,8 @@ namespace Zip.InstallmentsService.Core.Entity
     {
         public PaymentPlanProfile()
         {
-            
-            CreateMap<CreatePaymentPlanDto, PaymentPlanDto>();
-            CreateMap<PaymentPlan, PaymentPlanDto>();
-            CreateMap<Installment, InstallmentDto>();
+            CreateMap<CreatePaymentPlanRequest, PaymentPlan>();
+            CreateMap<PaymentPlan, PaymentPlanResponse>();
         }
 
     }
