@@ -73,6 +73,12 @@ namespace Zip.InstallmentsService.API.Controllers.V1
             if (_requestModel.PurchaseDate == DateTime.MinValue)
                 _requestModel.PurchaseDate = DateTime.UtcNow;
 
+            //var result1  = new CreatePaymentPlanRequestValidator().Validate(_requestModel);
+            //if (!result1.IsValid)
+            //{
+            //    return BadRequest(result1.Errors);
+            //}
+
             //Validate create payment plan request
             var validRequestViewModel = _paymentPlanProvider.ValidateCreatePaymentPlanRequest(_requestModel);
             if (!validRequestViewModel.IsValid)

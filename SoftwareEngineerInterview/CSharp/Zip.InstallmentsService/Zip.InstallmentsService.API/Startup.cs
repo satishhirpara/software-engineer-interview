@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using Zip.InstallmentsService.API.Filter;
 using Zip.InstallmentsService.API.Middleware;
 using Zip.InstallmentsService.Core.Implementation;
 using Zip.InstallmentsService.Core.Interface;
@@ -110,6 +112,16 @@ namespace Zip.InstallmentsService.Service
 
             //configure api controllers
             services.AddControllers().AddNewtonsoftJson();
+
+            //configure fluent validation
+            services
+                .AddMvc(x =>
+                {
+                    x.EnableEndpointRouting = false;
+                    x.Filters.Add(new ValidationFilter());
+                })
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             //configure api versioning to the project
             services.AddApiVersioning(x =>
