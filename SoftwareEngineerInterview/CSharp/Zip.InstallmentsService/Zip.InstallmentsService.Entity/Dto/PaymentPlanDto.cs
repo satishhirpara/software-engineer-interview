@@ -13,8 +13,6 @@ namespace Zip.InstallmentsService.Entity.Dto
         public Guid UserId { get; set; }
         public decimal PurchaseAmount { get; set; }
         public DateTime PurchaseDate { get; set; }
-        public int NoOfInstallments { get; set; }
-        public int FrequencyInDays { get; set; }
         public List<InstallmentDto> Installments { get; set; }
 
     }

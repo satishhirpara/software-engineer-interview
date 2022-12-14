@@ -65,8 +65,6 @@ namespace Zip.InstallmentsService.Data.Repository
                 UserId = paymentPlan.UserId,
                 PurchaseAmount = paymentPlan.PurchaseAmount,
                 PurchaseDate = paymentPlan.PurchaseDate,
-                NoOfInstallments = paymentPlan.NoOfInstallments,
-                FrequencyInDays = paymentPlan.FrequencyInDays,
                 Installments = installments.ToList() ?? null
             };
         }

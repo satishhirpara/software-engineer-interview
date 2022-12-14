@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Zip.InstallmentsService.Entity.Common
+﻿namespace Zip.InstallmentsService.Entity.Common
 {
     public class ValidateRequest
     {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Core.Helper;
 using Zip.InstallmentsService.Core.Interface;
-using System.Threading.Tasks;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Entity.V1.Request
 {

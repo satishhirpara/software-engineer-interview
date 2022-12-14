@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Zip.InstallmentsService.API.Helper;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity;
-using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.API.Controllers
@@ -20,17 +18,14 @@ namespace Zip.InstallmentsService.API.Controllers
     {
 
         private readonly IPaymentPlanProvider _paymentPlanProvider;
-        private readonly ILogger _logger;
 
         /// <summary>
         /// Intialization in Constructor
         /// </summary>
         /// <param name="paymentPlanProvider"></param>
-        /// <param name="_logger"></param>
-        public PaymentPlanController(IPaymentPlanProvider paymentPlanProvider, ILogger logger)
+        public PaymentPlanController(IPaymentPlanProvider paymentPlanProvider)
         {
             _paymentPlanProvider = paymentPlanProvider;
-            _logger = logger;
         }
 
         /// <summary>
@@ -70,7 +65,7 @@ namespace Zip.InstallmentsService.API.Controllers
         [HttpPost]
         //[Authorize] 
         [Route("api/PaymentPlan")]
-        public async Task<IActionResult> Create([FromBody] CreatePaymentPlanRequest _requestModel)
+        public async Task<IActionResult> Post([FromBody] CreatePaymentPlanRequest _requestModel)
         {
             if (_requestModel.Id == Guid.Empty) _requestModel.Id = Guid.NewGuid();
 

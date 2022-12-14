@@ -160,8 +160,8 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                NoOfInstallments = noOfInstallments,
-                FrequencyInDays = frequencyInDays,
+                //NoOfInstallments = noOfInstallments,
+                //FrequencyInDays = frequencyInDays,
                 Installments = this.MockInstallmentDtoList(id)
             };
             return paymentPlanDto;
@@ -174,8 +174,8 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                NoOfInstallments = noOfInstallments,
-                FrequencyInDays = frequencyInDays,
+                //NoOfInstallments = noOfInstallments,
+                //FrequencyInDays = frequencyInDays,
                 Installments = this.MockInstallmentList(id)
             };
             return paymentPlan;
