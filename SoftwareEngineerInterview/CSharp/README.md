@@ -8,7 +8,7 @@ Microsoft Visual Studio Community 2022 (64-bit) > Version 17.4.2
 ```
 - This API supports .net core 3.1 (LTS) and created from Visual studio 2022.
 - This includes Depandency injection, repository pattern, SOLID principles, EF In Memory database, automapper, swagger, Enabled global cors policy (We can customise as per need),
-	Azure Application insight for Exception handling which Custom MiddleWare (Need to add application telementry key for make it work),
+	Azure Application insight for Exception handling which Custom MiddleWare (Need to add application telementry key for make it work), API versioning, 
 	JWT Authentication (Logic added fully now to make it work we need to have separte auth api which whould generate token and same token will be validated in this api if we uncomment some 
 	code like Authorise attribute and UseAuthentication in startup file),
 
