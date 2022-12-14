@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -106,7 +108,24 @@ namespace Zip.InstallmentsService.Service
             services.AddScoped<IPaymentPlanRepository, PaymentPlanRepository>();
             services.AddScoped<IInstallmentProvider, InstallmentProvider>();
 
+            //configure api controllers
             services.AddControllers().AddNewtonsoftJson();
+
+            //configure api versioning to the project
+            services.AddApiVersioning(x =>
+            {
+                x.DefaultApiVersion = new ApiVersion(1, 0); //specify the default API version as 1.0
+                x.AssumeDefaultVersionWhenUnspecified = true; // use the default versin number if the client hasn't specified the API version in the request.
+
+                //x.ApiVersionReader = new MediaTypeApiVersionReader("version"); // add along with accept in header
+                //x.ApiVersionReader = new HeaderApiVersionReader("X-Version"); // own new key in header
+                x.ApiVersionReader = ApiVersionReader.Combine(
+                    new MediaTypeApiVersionReader("version"),
+                    new HeaderApiVersionReader("X-Version")
+                    );
+
+                x.ReportApiVersions = true; //Advertise the api versions supported for particular endpoint
+            });
         }
 
         /// <summary>
@@ -124,7 +143,8 @@ namespace Zip.InstallmentsService.Service
 
             //Configure swagger and swagger UI
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Showing API V1");
             });
 

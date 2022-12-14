@@ -7,13 +7,15 @@ using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity;
 using Zip.InstallmentsService.Entity.V1.Request;
 
-namespace Zip.InstallmentsService.API.Controllers
+namespace Zip.InstallmentsService.API.Controllers.V1
 {
 
     /// <summary>
     /// Controller which defines all the end points for a purchase installment plan.
     /// </summary>
     [Route("api/[controller]")]
+    //[Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     public class PaymentPlanController : ControllerBase
     {
@@ -51,7 +53,7 @@ namespace Zip.InstallmentsService.API.Controllers
             {
                 throw new KeyNotFoundException(AppConstants.NoRecordFound);
             }
-            
+
             return Ok(result);
         }
 

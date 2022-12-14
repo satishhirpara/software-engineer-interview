@@ -63,6 +63,8 @@ Now to test this API please find below steps
 - Azure app sight is used for logging as i assumed that should work after we add application insight key.
 - JWT token based authontication is added with all code but that is commented so i am assuming that it should also work once we add it.
 - Presently global CORS policy is enabled but i am assuming later it can be changed as per requirement.
+- API versioning is done with default as a 1.0 and to check it we need to pass "X-Version = 1.0 or 2.0" in header of api. so for 1.0 we have an Api and for 2.0 we dont have an api so it will show an error.
+i am assuming we will have a new api version 2.0 in future so just created folder of V2.
 - Comments are now added at most of the places to get the idea of the logic however if that does not work then Name of the method is given in such a way to get some idea. 
 Also i am assuming that i will follow some sort of existing commenting pattern or apply same on this project for consistancy.
 ```
