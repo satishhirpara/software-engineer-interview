@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Zip.InstallmentsService.Core.Helper;
+using Zip.InstallmentsService.Core.Extension;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
@@ -40,7 +40,7 @@ namespace Zip.InstallmentsService.Core.Implementation
                 installment.Id = System.Guid.NewGuid();
                 installment.PaymentPlanId = requestModel.Id;
 
-                if (i > 1) nextInstallmentDate = DateTimeHelper.GetNextDateAfterDays(nextInstallmentDate, frequencyInDays);
+                if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
                 installment.DueDate = nextInstallmentDate.Date;
                 installment.Amount = installmentAmount;
 
