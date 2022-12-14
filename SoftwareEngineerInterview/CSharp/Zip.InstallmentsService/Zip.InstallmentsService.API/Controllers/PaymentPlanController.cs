@@ -13,6 +13,7 @@ namespace Zip.InstallmentsService.API.Controllers
     /// <summary>
     /// Controller which defines all the end points for a purchase installment plan.
     /// </summary>
+    [Route("api/[controller]")]
     [ApiController]
     public class PaymentPlanController : ControllerBase
     {
@@ -34,9 +35,8 @@ namespace Zip.InstallmentsService.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{id}")]
         //[Authorize]
-        [Route("api/PaymentPlan/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             //Validate request
@@ -64,7 +64,6 @@ namespace Zip.InstallmentsService.API.Controllers
         /// <returns></returns>
         [HttpPost]
         //[Authorize] 
-        [Route("api/PaymentPlan")]
         public async Task<IActionResult> Post([FromBody] CreatePaymentPlanRequest _requestModel)
         {
             if (_requestModel.Id == Guid.Empty) _requestModel.Id = Guid.NewGuid();
@@ -80,7 +79,7 @@ namespace Zip.InstallmentsService.API.Controllers
             }
 
             //Create Plan
-            var result = _paymentPlanProvider.CreatePaymentPlanAsync(_requestModel);
+            var result = await _paymentPlanProvider.CreatePaymentPlanAsync(_requestModel);
             if (result == null)
             {
                 throw new KeyNotFoundException(AppConstants.NoRecordFound);
