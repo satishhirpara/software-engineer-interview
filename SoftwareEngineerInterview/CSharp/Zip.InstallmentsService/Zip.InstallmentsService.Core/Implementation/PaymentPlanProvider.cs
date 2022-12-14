@@ -63,7 +63,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         public async Task<PaymentPlanResponse> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel)
         {
-            //Validate request
+            //Validate create payment plan request
             var validateRequest = this.ValidateCreatePaymentPlanRequest(requestModel);
             if (!validateRequest.IsValid)
             {
@@ -71,7 +71,7 @@ namespace Zip.InstallmentsService.Core.Implementation
                 return null;
             }
 
-            //Calculate installments
+            //Logic to Calculate installments
             var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
             var installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
             paymentPlan.Installments = _mapper.Map<List<Installment>>(installments);

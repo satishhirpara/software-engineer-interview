@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Zip.InstallmentsService.Entity.Dto
 {
     /// <summary>
-    /// Data structure which defines all the properties for a PaymentPlan Requests.
+    /// Data structure which defines all the properties for a PaymentPlan dto
     /// </summary>
     public class PaymentPlanDto
     {

@@ -8,6 +8,9 @@ using Zip.InstallmentsService.Entity.Dto;
 
 namespace Zip.InstallmentsService.Data.Repository
 {
+    /// <summary>
+    /// This Repository class contains all methods or dataAcess logic for payment plan
+    /// </summary>
     public class PaymentPlanRepository : IPaymentPlanRepository
     {
         private readonly ApiContext _context;
@@ -46,6 +49,11 @@ namespace Zip.InstallmentsService.Data.Repository
             return this.MapToPaymentPlanDto(result.Entity); 
         }
 
+        /// <summary>
+        /// Map PaymentPlan object to PaymentPlanDto object
+        /// </summary>
+        /// <param name="paymentPlan"></param>
+        /// <returns></returns>
         private PaymentPlanDto MapToPaymentPlanDto(PaymentPlan paymentPlan)
         {
             //get installments

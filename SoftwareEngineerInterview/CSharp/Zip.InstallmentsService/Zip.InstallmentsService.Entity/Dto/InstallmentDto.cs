@@ -2,6 +2,9 @@
 
 namespace Zip.InstallmentsService.Entity.Dto
 {
+    /// <summary>
+    /// Data structure which defines all the properties for a Installment dto
+    /// </summary>
     public class InstallmentDto
     {
         public Guid Id { get; set; }

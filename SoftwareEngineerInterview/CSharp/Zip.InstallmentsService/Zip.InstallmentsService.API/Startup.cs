@@ -20,22 +20,35 @@ using Zip.InstallmentsService.Entity.Common;
 
 namespace Zip.InstallmentsService.Service
 {
+    /// <summary>
+    /// Start up class mainly used to set up the configuration and middele wares
+    /// </summary>
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Intialization in Constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            //configure EF In Memory database
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("PaymentPlan"));
-            //services.AddMvc();
+
+            //configure auto mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            //configure swagger
             services.AddSwaggerGen();
             services.AddSwaggerGen(c =>
             {
@@ -47,7 +60,7 @@ namespace Zip.InstallmentsService.Service
                 });
             });
 
-            //Logging
+            //configure logging
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<ApplicationLog>>();
             services.AddSingleton(typeof(ILogger), logger);
@@ -85,8 +98,10 @@ namespace Zip.InstallmentsService.Service
                 };
             });
 
+            //configure
             services.AddApplicationInsightsTelemetry();
 
+            //configuration for dependancy injection
             services.AddScoped<IPaymentPlanProvider, PaymentPlanProvider>();
             services.AddScoped<IPaymentPlanRepository, PaymentPlanRepository>();
             services.AddScoped<IInstallmentProvider, InstallmentProvider>();
@@ -94,14 +109,20 @@ namespace Zip.InstallmentsService.Service
             services.AddControllers().AddNewtonsoftJson();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //Configure developer exception page for dev environment
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            //Configure swagger and swagger UI
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Showing API V1");
@@ -109,21 +130,24 @@ namespace Zip.InstallmentsService.Service
 
             app.UseHttpsRedirection();
 
+            //Configure routing
             app.UseRouting();
 
-            // global cors policy
+            //Configure global cors policy
             app.UseCors(x => x
                 .SetIsOriginAllowed(origin => true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
 
-            // global error handler
+            //Configure global error handler
             app.UseMiddleware<ErrorHandlerMiddleware>();
 
+            //Configure authentication
             //app.UseAuthentication(); // UnComment for JWT token based authentication
             app.UseAuthorization();
 
+            //Configure endpoints
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

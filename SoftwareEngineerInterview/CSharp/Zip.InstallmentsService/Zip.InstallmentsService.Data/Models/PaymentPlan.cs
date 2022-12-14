@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Zip.InstallmentsService.Data.Models
 {
+    /// <summary>
+    /// Class which defines all the properties for payment plan
+    /// </summary>
     public class PaymentPlan
     {
         [Key]

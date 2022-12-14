@@ -7,10 +7,13 @@ using Zip.InstallmentsService.Entity.V1.Response;
 namespace Zip.InstallmentsService.Core.Mapping
 {
     /// <summary>
-    /// Created profiles for AutoMapper (Mapping of objects) of entities
+    /// Class which defines all the mapped objects for payment plan
     /// </summary>
     public class PaymentPlanProfile : Profile
     {
+        /// <summary>
+        /// Set up a profile along with object mapping
+        /// </summary>
         public PaymentPlanProfile()
         {
             CreateMap<CreatePaymentPlanRequest, PaymentPlan>();

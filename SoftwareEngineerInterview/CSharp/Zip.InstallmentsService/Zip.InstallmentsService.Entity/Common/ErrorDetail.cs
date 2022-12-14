@@ -2,6 +2,9 @@
 
 namespace Zip.InstallmentsService.Entity.Common
 {
+    /// <summary>
+    /// Data structure which defines all the properties for error details
+    /// </summary
     public class ErrorDetail
     {
         public int StatusCode { get; set; }

@@ -20,12 +20,22 @@ namespace Zip.InstallmentsService.API.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Intialization in Constructor
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="logger"></param>
         public ErrorHandlerMiddleware(RequestDelegate next, ILogger logger)
         {
             _logger = logger;
             _next = next;
         }
 
+        /// <summary>
+        /// Method which is invoked and makes call to core method to handle exception in case of any errpor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             try
@@ -39,6 +49,12 @@ namespace Zip.InstallmentsService.API.Middleware
             }
         }
 
+        /// <summary>
+        /// Core Logic to handle exceptions
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
         private async Task HandleExceptionAsync(HttpContext context, Exception error)
         {
             var response = context.Response;

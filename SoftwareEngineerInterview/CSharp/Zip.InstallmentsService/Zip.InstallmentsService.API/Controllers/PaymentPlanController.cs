@@ -71,14 +71,14 @@ namespace Zip.InstallmentsService.API.Controllers
             if (_requestModel.PurchaseDate == DateTime.MinValue)
                 _requestModel.PurchaseDate = DateTime.UtcNow;
 
-            //Validate Request
+            //Validate create payment plan request
             var validRequestViewModel = _paymentPlanProvider.ValidateCreatePaymentPlanRequest(_requestModel);
             if (!validRequestViewModel.IsValid)
             {
                 throw new AppException(validRequestViewModel.Message);
             }
 
-            //Create Plan
+            //Create payment plan
             var result = await _paymentPlanProvider.CreatePaymentPlanAsync(_requestModel);
             if (result == null)
             {

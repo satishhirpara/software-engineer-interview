@@ -3,7 +3,7 @@
 namespace Zip.InstallmentsService.Core.Extension
 {
     /// <summary>
-    /// Common methods related to datime operations
+    /// Extension methods related to datime operations
     /// </summary>
     public static class DateTimeExtension
     {

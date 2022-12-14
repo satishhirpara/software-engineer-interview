@@ -3,6 +3,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace Zip.InstallmentsService.Service
 {
+    /// <summary>
+    /// Class which defines a main methods and start-up setup details
+    /// </summary>
     public class Program
     {
         public static void Main(string[] args)

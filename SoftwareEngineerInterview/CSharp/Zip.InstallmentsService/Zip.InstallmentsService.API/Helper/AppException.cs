@@ -3,7 +3,7 @@ using System;
 
 namespace Zip.InstallmentsService.API.Helper
 {
-    // custom exception class for throwing application specific exceptions 
+    // Custom exception class for throwing application specific exceptions 
     // that can be caught and handled within the application
     public class AppException : Exception
     {

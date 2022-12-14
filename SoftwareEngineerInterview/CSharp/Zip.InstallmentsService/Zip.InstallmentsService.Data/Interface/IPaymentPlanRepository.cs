@@ -5,6 +5,9 @@ using Zip.InstallmentsService.Entity.Dto;
 
 namespace Zip.InstallmentsService.Data.Interface
 {
+    /// <summary>
+    /// interface for PaymentPlanRepository
+    /// </summary>
     public interface IPaymentPlanRepository
     {
         Task<PaymentPlanDto> CreatePaymentPlanAsync(PaymentPlan requestModel);

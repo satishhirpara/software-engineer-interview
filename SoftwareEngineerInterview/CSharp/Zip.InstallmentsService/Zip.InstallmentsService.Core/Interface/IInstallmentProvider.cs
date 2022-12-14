@@ -8,6 +8,9 @@ using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Interface
 {
+    /// <summary>
+    /// Interface for InstallmentProvider
+    /// </summary>
     public interface IInstallmentProvider
     {
         List<InstallmentResponse> CalculateInstallments(CreatePaymentPlanRequest requestModel);

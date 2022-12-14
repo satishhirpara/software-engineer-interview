@@ -6,6 +6,9 @@ using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Interface
 {
+    /// <summary>
+    /// interface for PaymentPlanProvider
+    /// </summary>
     public interface IPaymentPlanProvider
     {
         ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel);

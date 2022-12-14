@@ -7,6 +7,9 @@ using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
+    /// <summary>
+    /// This class contains all methods or bussiness logic for installation
+    /// </summary>
     public class InstallmentProvider : IInstallmentProvider
     {
         /// <summary>
@@ -26,12 +29,14 @@ namespace Zip.InstallmentsService.Core.Implementation
         {
             List<InstallmentResponse> installments = new List<InstallmentResponse>();
 
-            var purchaseDate = requestModel.PurchaseDate; // 01-01-2022
-            var purchaseAmount = requestModel.PurchaseAmount; // $100.00
-            var noOfInstallments = requestModel.NoOfInstallments; // 4
-            var frequencyInDays = requestModel.FrequencyInDays; // 14 days
+            // Logic to calculate installment amount as per no of installments
+            var purchaseDate = requestModel.PurchaseDate;
+            var purchaseAmount = requestModel.PurchaseAmount;
+            var noOfInstallments = requestModel.NoOfInstallments;
+            var frequencyInDays = requestModel.FrequencyInDays;
             var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments);
 
+            //Loop through noOfInstallments and prepare installments
             InstallmentResponse installment;
             var nextInstallmentDate = purchaseDate;
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
@@ -39,6 +44,7 @@ namespace Zip.InstallmentsService.Core.Implementation
                 installment = new InstallmentResponse();
                 installment.Id = System.Guid.NewGuid();
 
+                //Logic to get next installment date after frequency days
                 if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
                 installment.DueDate = nextInstallmentDate.Date;
                 installment.Amount = installmentAmount;
@@ -57,7 +63,6 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// </summary>
         /// <param name="purchaseAmount"></param>
         /// <param name="noOfInstallments"></param>
-        /// <param name="frequencyInDays"></param>
         /// <returns></returns>
         private decimal GetNextInstallmentAmount(decimal purchaseAmount, int noOfInstallments)
         {
