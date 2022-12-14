@@ -8,7 +8,6 @@ namespace Zip.InstallmentsService.Entity.V1.Response
     public class InstallmentResponse
     {
         public Guid Id { get; set; }
-        public Guid PaymentPlanId { get; set; }
         public DateTime DueDate { get; set; }
         public decimal Amount { get; set; }
 

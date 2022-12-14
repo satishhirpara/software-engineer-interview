@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Zip.InstallmentsService.Entity.V1.Request
 {

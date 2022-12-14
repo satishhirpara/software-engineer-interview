@@ -79,7 +79,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             //Create Payment plan
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
-            _logger.LogInformation("Payment plan created successfully user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
+            _logger.LogInformation("Payment plan created successfully for user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
             return _mapper.Map<PaymentPlanResponse>(response);
         }
 
@@ -93,6 +93,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         {
             var responemodel = new ValidateRequest();
             if (requestModel == null) responemodel.Message = "Bad Request.";
+            else if (requestModel.UserId == Guid.Empty) responemodel.Message = "Please provide userid.";
             else if (requestModel.PurchaseAmount <= 0) responemodel.Message = "Please provide valid order amount.";
             else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please provide valid no of installments.";
             else if (requestModel.PurchaseAmount <= requestModel.NoOfInstallments) responemodel.Message = "Please provide valid order amount or no of installments.";

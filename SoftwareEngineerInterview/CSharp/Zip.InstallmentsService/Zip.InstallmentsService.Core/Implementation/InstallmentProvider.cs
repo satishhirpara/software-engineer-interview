@@ -30,7 +30,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             var purchaseAmount = requestModel.PurchaseAmount; // $100.00
             var noOfInstallments = requestModel.NoOfInstallments; // 4
             var frequencyInDays = requestModel.FrequencyInDays; // 14 days
-            var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments, frequencyInDays);
+            var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments);
 
             InstallmentResponse installment;
             var nextInstallmentDate = purchaseDate;
@@ -38,7 +38,6 @@ namespace Zip.InstallmentsService.Core.Implementation
             {
                 installment = new InstallmentResponse();
                 installment.Id = System.Guid.NewGuid();
-                installment.PaymentPlanId = requestModel.Id;
 
                 if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
                 installment.DueDate = nextInstallmentDate.Date;
@@ -60,7 +59,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <param name="noOfInstallments"></param>
         /// <param name="frequencyInDays"></param>
         /// <returns></returns>
-        private decimal GetNextInstallmentAmount(decimal purchaseAmount, int noOfInstallments, int frequencyInDays)
+        private decimal GetNextInstallmentAmount(decimal purchaseAmount, int noOfInstallments)
         {
             decimal result = 0;
             if (noOfInstallments == 0) return result;
