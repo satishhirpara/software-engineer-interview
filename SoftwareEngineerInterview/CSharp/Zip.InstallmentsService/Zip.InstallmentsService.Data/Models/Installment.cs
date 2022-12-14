@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Zip.InstallmentsService.Data.Models
 {
@@ -11,6 +12,7 @@ namespace Zip.InstallmentsService.Data.Models
         [Key]
         public Guid Id { get; set; }
 
+        [ForeignKey("PaymentPlan")]
         public Guid PaymentPlanId { get; set; }
         public PaymentPlan PaymentPlan { get; set; }
         public DateTime DueDate { get; set; }
