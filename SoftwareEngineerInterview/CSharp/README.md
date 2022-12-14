@@ -57,3 +57,12 @@ Now to test this API please find below steps
 - Make sure Zip.InstallmentsService.Core.Test project is set as a start project
 - On the top menu of visual studion, click on Test > Test Explorer. then you can get all test cases there and you can right click and run all or any single one.
 ```
+
+## Assumptions made
+```
+- Azure app sight is used for logging as i assumed that should work after we add application insight key.
+- JWT token based authontication is added with all code but that is commented so i am assuming that it should also work once we add it.
+- Presently global CORS policy is enabled but i am assuming later it can be changed as per requirement.
+- Comments are now added at most of the places to get the idea of the logic however if that does not work then Name of the method is given in such a way to get some idea. 
+Also i am assuming that i will follow some sort of existing commenting pattern or apply same on this project for consistancy.
+```
