@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -21,6 +22,7 @@ using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Data.Repository;
 using Zip.InstallmentsService.Entity.Common;
+using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.Service
 {
@@ -46,6 +48,16 @@ namespace Zip.InstallmentsService.Service
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            //configure fluent validation
+            services.AddControllers();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ValidationFilter());
+            }).AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssemblyContaining<PaymentPlanRequest>();
+            });
+
             //configure EF In Memory database
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("PaymentPlan"));
 
@@ -113,31 +125,21 @@ namespace Zip.InstallmentsService.Service
             //configure api controllers
             services.AddControllers().AddNewtonsoftJson();
 
-            //configure fluent validation
-            services
-                .AddMvc(x =>
-                {
-                    x.EnableEndpointRouting = false;
-                    x.Filters.Add(new ValidationFilter());
-                })
-                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
             //configure api versioning to the project
             services.AddApiVersioning(x =>
-            {
-                x.DefaultApiVersion = new ApiVersion(1, 0); //specify the default API version as 1.0
-                x.AssumeDefaultVersionWhenUnspecified = true; // use the default versin number if the client hasn't specified the API version in the request.
+                {
+                    x.DefaultApiVersion = new ApiVersion(1, 0); //specify the default API version as 1.0
+                    x.AssumeDefaultVersionWhenUnspecified = true; // use the default versin number if the client hasn't specified the API version in the request.
 
-                //x.ApiVersionReader = new MediaTypeApiVersionReader("version"); // add along with accept in header
-                //x.ApiVersionReader = new HeaderApiVersionReader("X-Version"); // own new key in header
-                x.ApiVersionReader = ApiVersionReader.Combine(
-                    new MediaTypeApiVersionReader("version"),
-                    new HeaderApiVersionReader("X-Version")
-                    );
+                    //x.ApiVersionReader = new MediaTypeApiVersionReader("version"); // add along with accept in header
+                    //x.ApiVersionReader = new HeaderApiVersionReader("X-Version"); // own new key in header
+                    x.ApiVersionReader = ApiVersionReader.Combine(
+                        new MediaTypeApiVersionReader("version"),
+                        new HeaderApiVersionReader("X-Version")
+                        );
 
-                x.ReportApiVersions = true; //Advertise the api versions supported for particular endpoint
-            });
+                    x.ReportApiVersions = true; //Advertise the api versions supported for particular endpoint
+                });
         }
 
         /// <summary>

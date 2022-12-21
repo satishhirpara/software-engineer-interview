@@ -28,11 +28,11 @@ namespace Zip.InstallmentsService.Entity.V1.Request
     {
         public CreatePaymentPlanRequestValidator()
         {
-            RuleFor(x => x.UserId).NotNull();
-            RuleFor(x => x.PurchaseAmount).GreaterThan(0);
-            RuleFor(x => x.NoOfInstallments).GreaterThan(0);
-            RuleFor(x => x.PurchaseAmount).GreaterThan(y => y.NoOfInstallments);
-            RuleFor(x => x.FrequencyInDays).GreaterThan(0).LessThanOrEqualTo(365);
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("Please provide userid.");
+            RuleFor(x => x.PurchaseAmount).GreaterThan(0).WithMessage("Please provide valid order amount.");
+            RuleFor(x => x.NoOfInstallments).GreaterThan(0).WithMessage("Please provide valid no of installments.");
+            RuleFor(x => x.PurchaseAmount).GreaterThan(y => y.NoOfInstallments).WithMessage("An order amount must be greater then no of installments.");
+            RuleFor(x => x.FrequencyInDays).GreaterThan(0).LessThanOrEqualTo(365).WithMessage("Please provide valid frequency between 0 to 365 days.");
         }
     }
 

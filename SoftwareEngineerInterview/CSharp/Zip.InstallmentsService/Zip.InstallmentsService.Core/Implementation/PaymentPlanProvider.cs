@@ -89,7 +89,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        public ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel)
+        private ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel)
         {
             var responemodel = new ValidateRequest();
             if (requestModel == null) responemodel.Message = "Bad Request.";

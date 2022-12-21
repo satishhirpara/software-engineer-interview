@@ -11,7 +11,6 @@ namespace Zip.InstallmentsService.Core.Interface
     /// </summary>
     public interface IPaymentPlanProvider
     {
-        ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel);
         Task<PaymentPlanResponse> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel);
         Task<PaymentPlanResponse> GetByIdAsync(Guid id);
 
