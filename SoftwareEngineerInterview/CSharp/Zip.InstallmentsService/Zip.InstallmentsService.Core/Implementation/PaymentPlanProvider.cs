@@ -63,46 +63,18 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         public async Task<PaymentPlanResponse> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel)
         {
-            //Validate create payment plan request
-            var validateRequest = this.ValidateCreatePaymentPlanRequest(requestModel);
-            if (!validateRequest.IsValid)
-            {
-                _logger.LogInformation("Unable to create a payment plan due to bad request for userId : {userId}", requestModel.UserId);
-                return null;
-            }
+            _logger.LogInformation("Request received to create a payment plan for user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
 
             //Logic to Calculate installments
             var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
             var installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
             paymentPlan.Installments = _mapper.Map<List<Installment>>(installments);
-            
+
             //Create Payment plan
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
 
             _logger.LogInformation("Payment plan created successfully for user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
             return _mapper.Map<PaymentPlanResponse>(response);
-        }
-
-
-        /// <summary>
-        /// Validate Payment plan create request
-        /// </summary>
-        /// <param name="requestModel"></param>
-        /// <returns></returns>
-        private ValidateRequest ValidateCreatePaymentPlanRequest(CreatePaymentPlanRequest requestModel)
-        {
-            var responemodel = new ValidateRequest();
-            if (requestModel == null) responemodel.Message = "Bad Request.";
-            else if (requestModel.UserId == Guid.Empty) responemodel.Message = "Please provide userid.";
-            else if (requestModel.PurchaseAmount <= 0) responemodel.Message = "Please provide valid order amount.";
-            else if (requestModel.NoOfInstallments == 0) responemodel.Message = "Please provide valid no of installments.";
-            else if (requestModel.PurchaseAmount <= requestModel.NoOfInstallments) responemodel.Message = "Please provide valid order amount or no of installments.";
-            else if (requestModel.FrequencyInDays == 0 || requestModel.FrequencyInDays > 365) responemodel.Message = "Please provide valid frequency between 0 to 365 days.";
-
-            if (!string.IsNullOrEmpty(responemodel.Message)) return responemodel;
-
-            responemodel.IsValid = true;
-            return responemodel;
         }
 
     }
