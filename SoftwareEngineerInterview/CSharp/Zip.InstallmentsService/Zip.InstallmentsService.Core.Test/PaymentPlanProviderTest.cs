@@ -4,6 +4,8 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Xunit;
 using Zip.InstallmentsService.Core.Implementation;
 using Zip.InstallmentsService.Core.Interface;
@@ -53,15 +55,18 @@ namespace Zip.InstallmentsService.Core.Test
 
             //--- Mock set up for _installmentProviderMock
             string date = "2022-01-01";
+            string createdOn = DateTime.UtcNow.Date.ToString();
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 100, 4, 14);
-            var installmentResponseList = MockInstallmentResponseList(userId, date);
-            _installmentProviderMock.Setup(x => x.CalculateInstallments(createPaymentPlanRequest))
-                .Returns(installmentResponseList);
+            //var installmentResponseList = MockInstallmentResponseList(userId, date, createdOn);
+            //_installmentProviderMock.Setup(x => x.CalculateInstallments(createPaymentPlanRequest))
+            //    .Returns(installmentResponseList);
 
             //--- Mock set up for _paymentPlanRepositoryMock
-            var mockPaymentPlan = this.MockPaymentPlanObject(paymentPlanId, userId, date, 100);
-            var mockPaymentPlanDto = this.MockPaymentPlanDtoObject(paymentPlanId, userId, date, 100);
-            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(mockPaymentPlan))
+            var mockPaymentPlan = this.MockPaymentPlanObject(paymentPlanId, userId, date, 100, createdOn);
+            mockPaymentPlan.Installments = this.MockInstallmentList(createPaymentPlanRequest.Id, userId, date, createdOn);
+
+            var mockPaymentPlanDto = this.MockPaymentPlanDtoObject(paymentPlanId, userId, date, 100, createdOn);
+            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(createPaymentPlanRequest))
                 .ReturnsAsync(mockPaymentPlanDto);
 
             //Act
@@ -75,22 +80,25 @@ namespace Zip.InstallmentsService.Core.Test
         /// Test case for CreatePaymentPlanAsync Method when in-valid order amount is provided
         /// </summary>
         [Fact]
-        public async void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidOrderAmountGiven()
+        public void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidOrderAmountGiven()
         {
             //Arrange
+            var createPaymentPlanRequestValidator = new CreatePaymentPlanRequestValidator();
             var paymentPlanId = Guid.NewGuid();
             var userId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             string date = "2022-01-01";
-            var paymentPlanMock = this.MockPaymentPlanObject(paymentPlanId, userId, date, 0);
+            string createdOn = DateTime.UtcNow.Date.ToString();
+            var paymentPlanMock = this.MockPaymentPlanObject(paymentPlanId, userId, date, 0, createdOn);
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 0, 4, 14);
-            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(paymentPlanMock))
+            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(createPaymentPlanRequest))
                 .ReturnsAsync(() => null);
 
             //Act
-            var paymentPlan = await _sut.CreatePaymentPlanAsync(createPaymentPlanRequest);
+            var result = createPaymentPlanRequestValidator.Validate(createPaymentPlanRequest);
+            int count = result.Errors.Where(o => o.PropertyName == "PurchaseAmount")?.ToList()?.Count ?? 0;
 
             //Assert
-            Assert.Null(paymentPlan);
+            Assert.NotEqual(0, count);
         }
 
         /// <summary>
@@ -100,19 +108,22 @@ namespace Zip.InstallmentsService.Core.Test
         public async void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidInputGiven()
         {
             //Arrange
+            var createPaymentPlanRequestValidator = new CreatePaymentPlanRequestValidator();
             var paymentPlanId = Guid.NewGuid();
             var userId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             string date = "2022-01-01";
-            var paymentPlanMock = this.MockPaymentPlanObject(paymentPlanId, userId, date, 0);
+            string createdOn = DateTime.UtcNow.Date.ToString();
+            var paymentPlanMock = this.MockPaymentPlanObject(paymentPlanId, userId, date, 0, createdOn);
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 0, 0, 0);
-            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(paymentPlanMock))
+            _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(createPaymentPlanRequest))
                 .ReturnsAsync(() => null);
 
             //Act
-            var paymentPlan = await _sut.CreatePaymentPlanAsync(createPaymentPlanRequest);
+            var result = createPaymentPlanRequestValidator.Validate(createPaymentPlanRequest);
+            int count = result.Errors?.ToList()?.Count ?? 0;
 
             //Assert
-            Assert.Null(paymentPlan);
+            Assert.NotEqual(0, count);
         }
 
 
@@ -126,7 +137,8 @@ namespace Zip.InstallmentsService.Core.Test
             var paymentPlanId = Guid.NewGuid();
             var userId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             string date = "2022-01-01";
-            var paymentPlanDto = this.MockPaymentPlanDtoObject(paymentPlanId, userId, date, 100);
+            string createdOn = DateTime.UtcNow.Date.ToString();
+            var paymentPlanDto = this.MockPaymentPlanDtoObject(paymentPlanId, userId, date, 100, createdOn);
             _paymentPlanRepositoryMock.Setup(x => x.GetByIdAsync(paymentPlanId))
                 .ReturnsAsync(paymentPlanDto);
 
@@ -157,7 +169,7 @@ namespace Zip.InstallmentsService.Core.Test
 
         #region Private Methods for mock object preparation
 
-        private PaymentPlanDto MockPaymentPlanDtoObject(Guid id, Guid userId, string date, decimal amount)
+        private PaymentPlanDto MockPaymentPlanDtoObject(Guid id, Guid userId, string date, decimal amount, string createdOn)
         {
             PaymentPlanDto paymentPlanDto = new PaymentPlanDto()
             {
@@ -165,11 +177,11 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                Installments = this.MockInstallmentDtoList(userId, date)
+                Installments = this.MockInstallmentDtoList(id, userId, date, createdOn)
             };
             return paymentPlanDto;
         }
-        private PaymentPlan MockPaymentPlanObject(Guid id, Guid userId, string date, decimal amount)
+        private PaymentPlan MockPaymentPlanObject(Guid id, Guid userId, string date, decimal amount, string createdOn)
         {
             PaymentPlan paymentPlan = new PaymentPlan()
             {
@@ -177,7 +189,9 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                Installments = this.MockInstallmentList(id, userId, date)
+                Installments = this.MockInstallmentList(id, userId, date, createdOn),
+                CreatedOn = DateTime.UtcNow.Date,
+                CreatedBy = userId
             };
             return paymentPlan;
         }
@@ -197,38 +211,38 @@ namespace Zip.InstallmentsService.Core.Test
             return createPaymentPlanRequest;
         }
 
-        private List<InstallmentDto> MockInstallmentDtoList(Guid userId, string date)
+        private List<InstallmentDto> MockInstallmentDtoList(Guid paymentPlanId, Guid userId, string date, string createdOn)
         {
             List<InstallmentDto> installmentDtos = new List<InstallmentDto>()
             {
-                new InstallmentDto(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) }
+                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) }
             };
 
             return installmentDtos;
         }
-        private List<InstallmentResponse> MockInstallmentResponseList(Guid userId, string date)
+        private List<InstallmentResponse> MockInstallmentResponseList(Guid userId, string date, string createdOn)
         {
             List<InstallmentResponse> installments = new List<InstallmentResponse>()
              {
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) }
+                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) }
             };
 
             return installments;
         }
-        private List<Installment> MockInstallmentList(Guid paymentPlanId, Guid userId, string date)
+        private List<Installment> MockInstallmentList(Guid paymentPlanId, Guid userId, string date, string createdOn)
         {
             List<Installment> installments = new List<Installment>()
             {
-                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) },
-                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(date) }
+                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
+                new Installment(){ Id = Guid.NewGuid(), PaymentPlanId = paymentPlanId, DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) }
             };
 
             return installments;

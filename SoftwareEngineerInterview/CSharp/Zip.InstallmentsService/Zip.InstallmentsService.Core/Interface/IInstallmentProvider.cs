@@ -13,6 +13,6 @@ namespace Zip.InstallmentsService.Core.Interface
     /// </summary>
     public interface IInstallmentProvider
     {
-        List<InstallmentResponse> CalculateInstallments(CreatePaymentPlanRequest requestModel);
+        List<InstallmentDto> CalculateInstallments(CreatePaymentPlanRequest requestModel);
     }
 }

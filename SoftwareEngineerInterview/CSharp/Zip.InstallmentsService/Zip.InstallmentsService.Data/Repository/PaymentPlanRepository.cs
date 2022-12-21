@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.Dto;
+using Zip.InstallmentsService.Entity.V1.Request;
 
 namespace Zip.InstallmentsService.Data.Repository
 {
@@ -42,8 +44,35 @@ namespace Zip.InstallmentsService.Data.Repository
         /// </summary>
         /// <param name="_paymentPlan"></param>
         /// <returns></returns>
-        public async Task<PaymentPlanDto> CreatePaymentPlanAsync(PaymentPlan paymentPlan)
+        public async Task<PaymentPlanDto> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel)
         {
+            PaymentPlan paymentPlan = new PaymentPlan()
+            {
+                Id = requestModel.Id,
+                UserId = requestModel.UserId,
+                PurchaseAmount = requestModel.PurchaseAmount,
+                PurchaseDate = requestModel.PurchaseDate,
+                CreatedOn = DateTime.UtcNow.Date,
+                CreatedBy = requestModel.UserId
+            };
+            
+            List<Installment> finalList = new List<Installment>();
+            foreach (var item in requestModel.Installments)
+            {
+                var installment = new Installment()
+                {
+                    Id = item.Id,
+                    DueDate = item.DueDate,
+                    Amount = item.Amount,
+                    CreatedOn = item.CreatedOn,
+                    CreatedBy = item.CreatedBy,
+                    PaymentPlanId = paymentPlan.Id
+                };
+
+                finalList.Add(installment);
+            }
+            paymentPlan.Installments = finalList;
+
             var result = await _context.PaymentPlans.AddAsync(paymentPlan);
             await _context.SaveChangesAsync();
             return this.MapToPaymentPlanDto(result.Entity); 

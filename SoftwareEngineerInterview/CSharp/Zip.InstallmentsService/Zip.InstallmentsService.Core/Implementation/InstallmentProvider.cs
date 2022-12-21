@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Zip.InstallmentsService.Core.Extension;
 using Zip.InstallmentsService.Core.Interface;
+using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 
@@ -25,9 +26,9 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        public List<InstallmentResponse> CalculateInstallments(CreatePaymentPlanRequest requestModel)
+        public List<InstallmentDto> CalculateInstallments(CreatePaymentPlanRequest requestModel)
         {
-            List<InstallmentResponse> installments = new List<InstallmentResponse>();
+            List<InstallmentDto> installments = new List<InstallmentDto>();
 
             // Logic to calculate installment amount as per no of installments
             var purchaseDate = requestModel.PurchaseDate;
@@ -37,11 +38,11 @@ namespace Zip.InstallmentsService.Core.Implementation
             var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments);
 
             //Loop through noOfInstallments and prepare installments
-            InstallmentResponse installment;
+            InstallmentDto installment;
             var nextInstallmentDate = purchaseDate;
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
             {
-                installment = new InstallmentResponse();
+                installment = new InstallmentDto();
                 installment.Id = System.Guid.NewGuid();
 
                 //Logic to get next installment date after frequency days

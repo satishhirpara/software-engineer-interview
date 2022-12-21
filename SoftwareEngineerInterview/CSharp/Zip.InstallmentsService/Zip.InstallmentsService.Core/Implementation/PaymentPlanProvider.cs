@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Zip.InstallmentsService.Core.Extension;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
@@ -68,13 +70,15 @@ namespace Zip.InstallmentsService.Core.Implementation
             _logger.LogDebug("Request received to create a payment plan with Id:{Id}, userId:{userId}, orderAmount:{orderAmount},orderDate:{orderDate},NoOfInstallments:{NoOfInstallments},FrequencyInDays:{FrequencyInDays}",
                 requestModel.Id, requestModel.UserId, requestModel.PurchaseAmount, requestModel.PurchaseDate, requestModel.NoOfInstallments, requestModel.FrequencyInDays);
 
-            //Logic to Calculate installments
-            var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
-            var installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
-            paymentPlan.Installments = _mapper.Map<List<Installment>>(installments);
+            //Set values if needed
+            if (requestModel.Id == Guid.Empty) requestModel.Id = Guid.NewGuid();
+            if (requestModel.PurchaseDate == DateTime.MinValue) requestModel.PurchaseDate = DateTime.UtcNow.Date;
 
+            //Logic to Calculate installments
+            requestModel.Installments = _installmentProvider.CalculateInstallments(requestModel)?.ToList();
+         
             //Create Payment plan
-            var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
+            var response = await _paymentPlanRepository.CreatePaymentPlanAsync(requestModel);
             if (response == null)
             {
                 _logger.LogError("An error has occurred while creating a payment plan for : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
@@ -84,6 +88,46 @@ namespace Zip.InstallmentsService.Core.Implementation
             _logger.LogDebug("Payment plan created successfully for Id:{Id}, userId:{userId}, orderAmount:{orderAmount},orderDate:{orderDate},NoOfInstallments:{NoOfInstallments},FrequencyInDays:{FrequencyInDays}",
                 requestModel.Id, requestModel.UserId, requestModel.PurchaseAmount, requestModel.PurchaseDate, requestModel.NoOfInstallments, requestModel.FrequencyInDays);
             return _mapper.Map<PaymentPlanResponse>(response);
+        }
+
+        private List<InstallmentResponse> CalculateInstallments(CreatePaymentPlanRequest requestModel)
+        {
+            List<InstallmentResponse> installments = new List<InstallmentResponse>();
+
+            // Logic to calculate installment amount as per no of installments
+            var purchaseDate = requestModel.PurchaseDate;
+            var purchaseAmount = requestModel.PurchaseAmount;
+            var noOfInstallments = requestModel.NoOfInstallments;
+            var frequencyInDays = requestModel.FrequencyInDays;
+            var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments);
+
+            //Loop through noOfInstallments and prepare installments
+            InstallmentResponse installment;
+            var nextInstallmentDate = purchaseDate;
+            for (int i = 1; i <= requestModel.NoOfInstallments; i++)
+            {
+                installment = new InstallmentResponse();
+                installment.Id = System.Guid.NewGuid();
+
+                //Logic to get next installment date after frequency days
+                if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
+                installment.DueDate = nextInstallmentDate.Date;
+                installment.Amount = installmentAmount;
+
+                installment.CreatedOn = DateTime.UtcNow;
+                installment.CreatedBy = requestModel.UserId;
+
+                installments.Add(installment);
+            }
+
+            return installments;
+        }
+        private decimal GetNextInstallmentAmount(decimal purchaseAmount, int noOfInstallments)
+        {
+            decimal result = 0;
+            if (noOfInstallments == 0) return result;
+            decimal installmentAmount = Convert.ToDecimal(purchaseAmount / noOfInstallments);
+            return installmentAmount;
         }
 
     }

@@ -14,7 +14,6 @@ namespace Zip.InstallmentsService.Data.Models
 
         [ForeignKey("PaymentPlan")]
         public Guid PaymentPlanId { get; set; }
-        public PaymentPlan PaymentPlan { get; set; }
         public DateTime DueDate { get; set; }
         public decimal Amount { get; set; }
 

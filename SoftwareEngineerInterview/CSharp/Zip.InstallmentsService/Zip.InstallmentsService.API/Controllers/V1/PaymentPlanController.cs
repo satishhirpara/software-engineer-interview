@@ -68,9 +68,6 @@ namespace Zip.InstallmentsService.API.Controllers.V1
         //[Authorize] 
         public async Task<IActionResult> Post([FromBody] CreatePaymentPlanRequest _requestModel)
         {
-            if (_requestModel.Id == Guid.Empty) _requestModel.Id = Guid.NewGuid();
-            if (_requestModel.PurchaseDate == DateTime.MinValue) _requestModel.PurchaseDate = DateTime.UtcNow;
-
             //Create payment plan
             var result = await _paymentPlanProvider.CreatePaymentPlanAsync(_requestModel);
             if (result == null)
