@@ -57,6 +57,7 @@ namespace Zip.InstallmentsService.API.Middleware
         /// <returns></returns>
         private async Task HandleExceptionAsync(HttpContext context, Exception error)
         {
+            
             var response = context.Response;
             response.ContentType = "application/json";
 

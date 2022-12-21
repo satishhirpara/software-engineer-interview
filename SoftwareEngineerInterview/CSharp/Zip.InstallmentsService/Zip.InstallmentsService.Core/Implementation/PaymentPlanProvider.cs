@@ -45,6 +45,8 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         public async Task<PaymentPlanResponse> GetByIdAsync(Guid id)
         {
+            _logger.LogDebug("Request received to get a payment plan for Id: {Id}", id);
+
             var paymentPlan = await _paymentPlanRepository.GetByIdAsync(id);
             if (paymentPlan == null)
             {
@@ -52,7 +54,7 @@ namespace Zip.InstallmentsService.Core.Implementation
                 return null;
             }
 
-            _logger.LogInformation("Retrieved a payment plan with Id: {Id}", id);
+            _logger.LogDebug("Retrieved a payment plan with Id: {Id}", id);
             return _mapper.Map<PaymentPlanResponse>(paymentPlan);
         }
 
@@ -63,7 +65,8 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         public async Task<PaymentPlanResponse> CreatePaymentPlanAsync(CreatePaymentPlanRequest requestModel)
         {
-            _logger.LogInformation("Request received to create a payment plan for user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
+            _logger.LogDebug("Request received to create a payment plan with Id:{Id}, userId:{userId}, orderAmount:{orderAmount},orderDate:{orderDate},NoOfInstallments:{NoOfInstallments},FrequencyInDays:{FrequencyInDays}",
+                requestModel.Id, requestModel.UserId, requestModel.PurchaseAmount, requestModel.PurchaseDate, requestModel.NoOfInstallments, requestModel.FrequencyInDays);
 
             //Logic to Calculate installments
             var paymentPlan = _mapper.Map<PaymentPlan>(requestModel);
@@ -72,8 +75,14 @@ namespace Zip.InstallmentsService.Core.Implementation
 
             //Create Payment plan
             var response = await _paymentPlanRepository.CreatePaymentPlanAsync(paymentPlan);
+            if (response == null)
+            {
+                _logger.LogError("An error has occurred while creating a payment plan for : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
+                return null;
+            }
 
-            _logger.LogInformation("Payment plan created successfully for user : {userId} with Id: {Id}", requestModel.UserId, requestModel.Id);
+            _logger.LogDebug("Payment plan created successfully for Id:{Id}, userId:{userId}, orderAmount:{orderAmount},orderDate:{orderDate},NoOfInstallments:{NoOfInstallments},FrequencyInDays:{FrequencyInDays}",
+                requestModel.Id, requestModel.UserId, requestModel.PurchaseAmount, requestModel.PurchaseDate, requestModel.NoOfInstallments, requestModel.FrequencyInDays);
             return _mapper.Map<PaymentPlanResponse>(response);
         }
 
