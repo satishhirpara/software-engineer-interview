@@ -46,7 +46,7 @@ namespace Zip.InstallmentsService.Service
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services"></param>
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             //configure fluent validation
             services.AddControllers();
@@ -147,7 +147,7 @@ namespace Zip.InstallmentsService.Service
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
         {
             //Configure developer exception page for dev environment
             if (env.IsDevelopment())

@@ -223,18 +223,6 @@ namespace Zip.InstallmentsService.Core.Test
 
             return installmentDtos;
         }
-        private List<InstallmentResponse> MockInstallmentResponseList(Guid userId, string date, string createdOn)
-        {
-            List<InstallmentResponse> installments = new List<InstallmentResponse>()
-             {
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentResponse(){ Id = Guid.NewGuid(), DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) }
-            };
-
-            return installments;
-        }
         private List<Installment> MockInstallmentList(Guid paymentPlanId, Guid userId, string date, string createdOn)
         {
             List<Installment> installments = new List<Installment>()
