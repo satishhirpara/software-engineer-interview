@@ -54,7 +54,7 @@ namespace Zip.InstallmentsService.Core.Test
             string date = "2022-01-01";
             string createdOn = DateTime.UtcNow.Date.ToString();
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 100, 4, 14);
-            
+
             //--- Mock set up for _paymentPlanRepositoryMock
             var mockPaymentPlan = this.MockPaymentPlanObject(paymentPlanId, userId, date, 100, createdOn);
             mockPaymentPlan.Installments = this.MockInstallmentList(createPaymentPlanRequest.Id, userId, createdOn);
@@ -67,7 +67,10 @@ namespace Zip.InstallmentsService.Core.Test
             var paymentPlan = await _sut.CreatePaymentPlanAsync(createPaymentPlanRequest);
 
             //Assert
-            Assert.Equal(4, paymentPlan?.Installments?.Count);
+            Assert.True(paymentPlan?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-01")));
+            Assert.True(paymentPlan?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-15")));
+            Assert.True(paymentPlan?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-29")));
+            Assert.True(paymentPlan?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-02-12")));
         }
 
         /// <summary>
@@ -92,14 +95,15 @@ namespace Zip.InstallmentsService.Core.Test
             int count = result.Errors.Where(o => o.PropertyName == "PurchaseAmount")?.ToList()?.Count ?? 0;
 
             //Assert
-            Assert.NotEqual(0, count);
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "PurchaseAmount" && k.ErrorMessage == "Please provide valid order amount."));
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "PurchaseAmount" && k.ErrorMessage == "An order amount must be greater then no of installments."));
         }
 
         /// <summary>
         /// Test case for CreatePaymentPlanAsync Method when in-valid input data is provided
         /// </summary>
         [Fact]
-        public async void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidInputGiven()
+        public void CreatePaymentPlanAsync_ShouldReturnNothing_WhenInValidInputGiven()
         {
             //Arrange
             var createPaymentPlanRequestValidator = new CreatePaymentPlanRequestValidator();
@@ -116,7 +120,10 @@ namespace Zip.InstallmentsService.Core.Test
             int count = result.Errors?.ToList()?.Count ?? 0;
 
             //Assert
-            Assert.NotEqual(0, count);
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "PurchaseAmount" && k.ErrorMessage == "Please provide valid order amount."));
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "NoOfInstallments" && k.ErrorMessage == "Please provide valid no of installments."));
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "PurchaseAmount" && k.ErrorMessage == "An order amount must be greater then no of installments."));
+            Assert.True(result?.Errors?.Any(k => k.PropertyName == "FrequencyInDays" && k.ErrorMessage == "'Frequency In Days' must be greater than '0'."));
         }
 
 
