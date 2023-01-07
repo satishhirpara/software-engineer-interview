@@ -75,7 +75,7 @@ namespace Zip.InstallmentsService.API.Controllers.V1
                 throw new KeyNotFoundException(AppConstants.NoRecordFound);
             }
 
-            return Ok(result);
+            return Created("", result);
         }
 
 
