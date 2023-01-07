@@ -57,7 +57,7 @@ namespace Zip.InstallmentsService.Core.Test
             
             //--- Mock set up for _paymentPlanRepositoryMock
             var mockPaymentPlan = this.MockPaymentPlanObject(paymentPlanId, userId, date, 100, createdOn);
-            mockPaymentPlan.Installments = this.MockInstallmentList(createPaymentPlanRequest.Id, userId, date, createdOn);
+            mockPaymentPlan.Installments = this.MockInstallmentList(createPaymentPlanRequest.Id, userId, createdOn);
 
             var mockPaymentPlanDto = this.MockPaymentPlanDtoObject(paymentPlanId, userId, date, 100, createdOn);
             _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(createPaymentPlanRequest))
@@ -107,7 +107,6 @@ namespace Zip.InstallmentsService.Core.Test
             var userId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             string date = "2022-01-01";
             string createdOn = DateTime.UtcNow.Date.ToString();
-            var paymentPlanMock = this.MockPaymentPlanObject(paymentPlanId, userId, date, 0, createdOn);
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 0, 0, 0);
             _paymentPlanRepositoryMock.Setup(x => x.CreatePaymentPlanAsync(createPaymentPlanRequest))
                 .ReturnsAsync(() => null);
@@ -171,7 +170,7 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                Installments = this.MockInstallmentDtoList(id, userId, date, createdOn)
+                Installments = this.MockInstallmentDtoList(id, userId, createdOn)
             };
             return paymentPlanDto;
         }
@@ -183,8 +182,8 @@ namespace Zip.InstallmentsService.Core.Test
                 UserId = userId,
                 PurchaseDate = Convert.ToDateTime(date),
                 PurchaseAmount = amount,
-                Installments = this.MockInstallmentList(id, userId, date, createdOn),
-                CreatedOn = DateTime.UtcNow.Date,
+                Installments = this.MockInstallmentList(id, userId, createdOn),
+                CreatedOn = Convert.ToDateTime(createdOn),
                 CreatedBy = userId
             };
             return paymentPlan;
@@ -205,7 +204,7 @@ namespace Zip.InstallmentsService.Core.Test
             return createPaymentPlanRequest;
         }
 
-        private List<InstallmentDto> MockInstallmentDtoList(Guid paymentPlanId, Guid userId, string date, string createdOn)
+        private List<InstallmentDto> MockInstallmentDtoList(Guid paymentPlanId, Guid userId, string createdOn)
         {
             List<InstallmentDto> installmentDtos = new List<InstallmentDto>()
             {
@@ -217,7 +216,7 @@ namespace Zip.InstallmentsService.Core.Test
 
             return installmentDtos;
         }
-        private List<Installment> MockInstallmentList(Guid paymentPlanId, Guid userId, string date, string createdOn)
+        private List<Installment> MockInstallmentList(Guid paymentPlanId, Guid userId, string createdOn)
         {
             List<Installment> installments = new List<Installment>()
             {

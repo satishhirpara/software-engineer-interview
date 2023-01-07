@@ -66,8 +66,7 @@ namespace Zip.InstallmentsService.Core.Implementation
         /// <returns></returns>
         private decimal GetNextInstallmentAmount(decimal purchaseAmount, int noOfInstallments)
         {
-            decimal result = 0;
-            if (noOfInstallments == 0) return result;
+            if (noOfInstallments == 0) return 0;
             decimal installmentAmount = Convert.ToDecimal(purchaseAmount / noOfInstallments);
             return installmentAmount;
         }

@@ -48,7 +48,6 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
 
             //Prepare request object
             string date = "2022-01-01";
-            string createdOn = DateTime.UtcNow.Date.ToString();
             var createPaymentPlanRequest = this.PrepareCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 100, 4, 14);
 
             //Act
