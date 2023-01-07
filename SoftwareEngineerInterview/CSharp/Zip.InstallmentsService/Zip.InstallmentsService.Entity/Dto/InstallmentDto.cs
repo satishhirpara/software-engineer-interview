@@ -7,6 +7,21 @@ namespace Zip.InstallmentsService.Entity.Dto
     /// </summary>
     public class InstallmentDto
     {
+        public InstallmentDto()
+        { 
+        
+        }
+
+        public InstallmentDto(Guid id, Guid paymentPlanId, DateTime? dueDate, decimal amount, DateTime createdOn, Guid createdBy) 
+        {
+            this.Id = id;
+            this.PaymentPlanId = paymentPlanId;
+            this.DueDate = dueDate?.Date ?? DateTime.MinValue;
+            this.Amount = amount;
+            this.CreatedOn = createdOn;
+            this.CreatedBy = createdBy;
+        }
+
         public Guid Id { get; set; }
         public Guid PaymentPlanId { get; set; }
         public DateTime DueDate { get; set; }

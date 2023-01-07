@@ -215,10 +215,10 @@ namespace Zip.InstallmentsService.Core.Test
         {
             List<InstallmentDto> installmentDtos = new List<InstallmentDto>()
             {
-                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-01"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-15"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-01-29"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) },
-                new InstallmentDto(){ Id = Guid.NewGuid(), PaymentPlanId= paymentPlanId, DueDate = Convert.ToDateTime("2022-02-12"), Amount = 25, CreatedBy = userId, CreatedOn = Convert.ToDateTime(createdOn) }
+                new InstallmentDto(Guid.NewGuid(), paymentPlanId, Convert.ToDateTime("2022-01-01"), 25, Convert.ToDateTime(createdOn), userId),
+                new InstallmentDto(Guid.NewGuid(), paymentPlanId, Convert.ToDateTime("2022-01-15"), 25, Convert.ToDateTime(createdOn), userId),
+                new InstallmentDto(Guid.NewGuid(), paymentPlanId, Convert.ToDateTime("2022-01-29"), 25, Convert.ToDateTime(createdOn), userId),
+                new InstallmentDto(Guid.NewGuid(), paymentPlanId, Convert.ToDateTime("2022-02-12"), 25, Convert.ToDateTime(createdOn), userId)
             };
 
             return installmentDtos;

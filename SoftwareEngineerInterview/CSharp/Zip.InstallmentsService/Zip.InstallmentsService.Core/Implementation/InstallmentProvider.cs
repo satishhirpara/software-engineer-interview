@@ -30,30 +30,18 @@ namespace Zip.InstallmentsService.Core.Implementation
             List<InstallmentDto> installments = new List<InstallmentDto>();
 
             // Logic to calculate installment amount as per no of installments
-            var purchaseDate = requestModel.PurchaseDate;
-            var purchaseAmount = requestModel.PurchaseAmount;
-            var noOfInstallments = requestModel.NoOfInstallments;
-            var frequencyInDays = requestModel.FrequencyInDays;
-            var installmentAmount = this.GetNextInstallmentAmount(purchaseAmount, noOfInstallments);
+            var installmentAmount = this.GetNextInstallmentAmount(requestModel.PurchaseAmount, requestModel.NoOfInstallments);
 
             //Loop through noOfInstallments and prepare installments
             InstallmentDto installment;
-            var nextInstallmentDate = purchaseDate;
+            var nextInstallmentDate = requestModel.PurchaseDate;
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
             {
-                installment = new InstallmentDto()
-                {
-                    Id = Guid.NewGuid()
-                };
+                installment = new InstallmentDto(Guid.NewGuid(), requestModel.Id, null, installmentAmount, DateTime.UtcNow, requestModel.UserId);
 
                 //Logic to get next installment date after frequency days
-                if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
+                if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(requestModel.FrequencyInDays);
                 installment.DueDate = nextInstallmentDate.Date;
-                installment.Amount = installmentAmount;
-
-                installment.CreatedOn = DateTime.UtcNow;
-                installment.CreatedBy = requestModel.UserId;
-
                 installments.Add(installment);
             }
 
