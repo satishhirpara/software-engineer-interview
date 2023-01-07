@@ -23,17 +23,6 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Models
             base.ConfigureServices(services);
         }
 
-        //protected override void AddDatabaseContext(IServiceCollection services)
-        //{
-        //    // "DefaultConnection": "Data Source=:memory:;"
-        //    var connectionString = Configuration.GetConnectionString("DefaultConnection");
-        //    var connection = new SqliteConnection(connectionString);
-        //    connection.Open();
-
-        //    services.AddDbContext<ApiContext>(options =>
-        //        options.UseSqlite(connection));
-        //}
-
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
         {
             base.Configure(app, env, context);
@@ -41,5 +30,6 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Models
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
         }
+
     }
 }

@@ -3,8 +3,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 using Zip.InstallmentsService.Core.Implementation;
@@ -14,7 +12,6 @@ using Zip.InstallmentsService.Data.Interface;
 using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
-using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Test
 {
@@ -57,10 +54,7 @@ namespace Zip.InstallmentsService.Core.Test
             string date = "2022-01-01";
             string createdOn = DateTime.UtcNow.Date.ToString();
             var createPaymentPlanRequest = this.MockCreatePaymentPlanRequestObject(paymentPlanId, userId, date, 100, 4, 14);
-            //var installmentResponseList = MockInstallmentResponseList(userId, date, createdOn);
-            //_installmentProviderMock.Setup(x => x.CalculateInstallments(createPaymentPlanRequest))
-            //    .Returns(installmentResponseList);
-
+            
             //--- Mock set up for _paymentPlanRepositoryMock
             var mockPaymentPlan = this.MockPaymentPlanObject(paymentPlanId, userId, date, 100, createdOn);
             mockPaymentPlan.Installments = this.MockInstallmentList(createPaymentPlanRequest.Id, userId, date, createdOn);

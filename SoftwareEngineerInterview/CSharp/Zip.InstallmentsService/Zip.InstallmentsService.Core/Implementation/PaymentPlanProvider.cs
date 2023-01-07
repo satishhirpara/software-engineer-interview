@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Zip.InstallmentsService.Core.Extension;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Data.Interface;
-using Zip.InstallmentsService.Data.Models;
-using Zip.InstallmentsService.Entity.Common;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 

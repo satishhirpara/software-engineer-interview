@@ -40,9 +40,6 @@ namespace Zip.InstallmentsService.API.Filter
             }
 
             await next();
-
-
-            //after controller
         }
 
 

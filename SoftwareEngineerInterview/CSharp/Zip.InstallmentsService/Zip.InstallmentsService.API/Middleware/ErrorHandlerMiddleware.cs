@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
-using System;
-using Zip.InstallmentsService.API.Helper;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using Zip.InstallmentsService.Entity.Dto;
-using System.Net.Http;
+using System.Threading.Tasks;
+using Zip.InstallmentsService.API.Helper;
 using Zip.InstallmentsService.Entity.Common;
 
 namespace Zip.InstallmentsService.API.Middleware

@@ -14,7 +14,6 @@ namespace Zip.InstallmentsService.API.Controllers.V1
     /// Controller which defines all the end points for a purchase installment plan.
     /// </summary>
     [Route("api/[controller]")]
-    //[Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class PaymentPlanController : ControllerBase

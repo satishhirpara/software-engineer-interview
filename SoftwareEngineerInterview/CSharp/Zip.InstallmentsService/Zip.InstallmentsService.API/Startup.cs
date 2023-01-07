@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -80,12 +79,6 @@ namespace Zip.InstallmentsService.Service
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<ApplicationLog>>();
             services.AddSingleton(typeof(ILogger), logger);
-
-            //services.AddLogging(config =>
-            //{
-            //    config.AddDebug();
-            //    config.AddConsole();
-            //});
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");

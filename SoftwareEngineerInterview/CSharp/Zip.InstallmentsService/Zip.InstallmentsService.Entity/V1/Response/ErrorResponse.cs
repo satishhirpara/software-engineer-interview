@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Zip.InstallmentsService.Entity.Common;
 
 namespace Zip.InstallmentsService.Entity.V1.Response

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
 

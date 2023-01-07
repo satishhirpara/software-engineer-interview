@@ -4,7 +4,6 @@ using Zip.InstallmentsService.Core.Extension;
 using Zip.InstallmentsService.Core.Interface;
 using Zip.InstallmentsService.Entity.Dto;
 using Zip.InstallmentsService.Entity.V1.Request;
-using Zip.InstallmentsService.Entity.V1.Response;
 
 namespace Zip.InstallmentsService.Core.Implementation
 {
@@ -43,7 +42,7 @@ namespace Zip.InstallmentsService.Core.Implementation
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
             {
                 installment = new InstallmentDto();
-                installment.Id = System.Guid.NewGuid();
+                installment.Id = Guid.NewGuid();
 
                 //Logic to get next installment date after frequency days
                 if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
