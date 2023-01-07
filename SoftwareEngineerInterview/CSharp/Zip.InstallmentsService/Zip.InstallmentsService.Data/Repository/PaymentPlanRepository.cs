@@ -33,7 +33,7 @@ namespace Zip.InstallmentsService.Data.Repository
         /// <returns></returns>
         public async Task<PaymentPlanDto> GetByIdAsync(Guid id)
         {
-            var paymentPlan = _context.PaymentPlans.Where(k => k.Id == id).Include(k => k.Installments)?.FirstOrDefault();
+            var paymentPlan = await _context.PaymentPlans.Where(k => k.Id == id).Include(k => k.Installments)?.FirstOrDefaultAsync();
             if (paymentPlan == null) return null;
 
             return this.MapToPaymentPlanDto(paymentPlan);

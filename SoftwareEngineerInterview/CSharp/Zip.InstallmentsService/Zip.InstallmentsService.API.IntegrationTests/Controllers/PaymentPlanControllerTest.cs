@@ -4,10 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Xunit;
 using Zip.InstallmentsService.API.IntegrationTests.Models;
+using Zip.InstallmentsService.Data.Models;
 using Zip.InstallmentsService.Entity.V1.Request;
 using Zip.InstallmentsService.Entity.V1.Response;
 
@@ -18,7 +20,7 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
     /// </summary>
     public class PaymentPlanControllerTest
     {
-        private HttpClient client;
+        private readonly HttpClient _client;
 
         /// <summary>
         /// Intialization in Constructor 
@@ -32,7 +34,7 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
                 .UseEnvironment("Development")
                 .UseStartup<TestStartup>();
             TestServer testServer = new TestServer(builder);
-            client = testServer.CreateClient();
+            _client = testServer.CreateClient();
         }
 
 
@@ -56,12 +58,16 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
                 Content = new JsonContent(createPaymentPlanRequest)
             };
 
-            HttpResponseMessage response = await client.SendAsync(postRequest);
+            HttpResponseMessage response = await _client.SendAsync(postRequest);
             response.EnsureSuccessStatusCode();
             var result = JsonConvert.DeserializeObject<PaymentPlanResponse>(await response.Content.ReadAsStringAsync());
 
             //Assert
-            Assert.Equal(4, result?.Installments?.Count);
+            Assert.True(result?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-01")));
+            Assert.True(result?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-15")));
+            Assert.True(result?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-01-29")));
+            Assert.True(result?.Installments?.Any(k => k.Amount == 25 && k.DueDate == Convert.ToDateTime("2022-02-12")));
+
         }
 
         /// <summary>
@@ -82,7 +88,7 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
                 Content = new JsonContent(createPaymentPlanRequest)
             };
 
-            HttpResponseMessage response = await client.SendAsync(postRequest);
+            HttpResponseMessage response = await _client.SendAsync(postRequest);
 
             //Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -106,7 +112,7 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
                 Content = new JsonContent(createPaymentPlanRequest)
             };
 
-            HttpResponseMessage response = await client.SendAsync(postRequest);
+            HttpResponseMessage response = await _client.SendAsync(postRequest);
 
             //Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -129,12 +135,12 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
             {
                 Content = new JsonContent(createPaymentPlanRequest)
             };
-            await client.SendAsync(postRequest);
+            await _client.SendAsync(postRequest);
 
 
             //Act
             HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, $"api/paymentplan/{paymentPlanId}");
-            HttpResponseMessage response = await client.SendAsync(getRequest);
+            HttpResponseMessage response = await _client.SendAsync(getRequest);
             var result = JsonConvert.DeserializeObject<PaymentPlanResponse>(await response.Content.ReadAsStringAsync());
 
             //Assert
@@ -152,7 +158,7 @@ namespace Zip.InstallmentsService.API.IntegrationTests.Controllers
 
             //Act
             HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, $"api/paymentplan/{paymentPlanId}");
-            HttpResponseMessage response = await client.SendAsync(getRequest);
+            HttpResponseMessage response = await _client.SendAsync(getRequest);
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

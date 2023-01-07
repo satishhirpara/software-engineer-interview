@@ -41,8 +41,10 @@ namespace Zip.InstallmentsService.Core.Implementation
             var nextInstallmentDate = purchaseDate;
             for (int i = 1; i <= requestModel.NoOfInstallments; i++)
             {
-                installment = new InstallmentDto();
-                installment.Id = Guid.NewGuid();
+                installment = new InstallmentDto()
+                {
+                    Id = Guid.NewGuid()
+                };
 
                 //Logic to get next installment date after frequency days
                 if (i > 1) nextInstallmentDate = nextInstallmentDate.GetNextDateAfterDays(frequencyInDays);
